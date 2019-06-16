@@ -1,6 +1,6 @@
-package com.sankuai.mpproduct.mtable.core;
+package com.company.mtable.core;
 
-import com.sankuai.mpproduct.mtable.schema.ColumnMeta;
+import com.company.mtable.schema.ColumnMeta;
 
 import java.util.List;
 

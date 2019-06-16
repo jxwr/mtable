@@ -1,4 +1,4 @@
-package com.sankuai.mpproduct.mtable.ql;
+package com.company.mtable.ql;
 
 public class NamedField extends Node {
     private String name;

@@ -1,6 +1,6 @@
-package com.sankuai.mpproduct.mtable.core;
+package com.company.mtable.core;
 
-import com.sankuai.mpproduct.mtable.schema.Schema;
+import com.company.mtable.schema.Schema;
 
 /**
  * Created by jxwr on 2019/6/16.

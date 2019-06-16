@@ -1,8 +1,7 @@
-package com.sankuai.mpproduct.mtable.ql;
+package com.company.mtable.ql;
 
-import com.sankuai.mpproduct.mtable.core.*;
-import com.sankuai.mpproduct.mtable.core.Scanner;
-import com.sankuai.mpproduct.mtable.schema.Schema;
+import com.company.mtable.core.*;
+import com.company.mtable.schema.Schema;
 
 import java.util.*;
 
@@ -75,7 +74,7 @@ public class Querier {
     }
 
     public Map<Object, Object> query(Node root) {
-        ResultSet resultSet = bucket.scan(schema, Collections.emptyList(), new Scanner() {
+        ResultSet resultSet = bucket.scan(schema, Collections.emptyList(), new com.company.mtable.core.Scanner() {
             private DictData resultDict;
             private ResultSet resultSet;
 

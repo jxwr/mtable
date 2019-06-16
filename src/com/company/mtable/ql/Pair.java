@@ -1,4 +1,4 @@
-package com.sankuai.mpproduct.mtable.ql;
+package com.company.mtable.ql;
 
 /**
  * Created by jxwr on 2019/6/14.

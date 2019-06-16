@@ -1,9 +1,4 @@
-package com.sankuai.mpproduct.mtable.ql;
-
-import com.sankuai.mpproduct.mtable.ql.NamedDictArray;
-import com.sankuai.mpproduct.mtable.ql.NamedDictByKey;
-import com.sankuai.mpproduct.mtable.ql.NamedField;
-import com.sankuai.mpproduct.mtable.ql.Node;
+package com.company.mtable.ql;
 
 import java.util.Arrays;
 import java.util.List;

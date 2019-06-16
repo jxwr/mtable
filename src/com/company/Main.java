@@ -1,14 +1,13 @@
 package com.company;
 
+import com.company.mtable.core.*;
+import com.company.mtable.core.Scanner;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.sankuai.mpproduct.mtable.core.*;
-import com.sankuai.mpproduct.mtable.core.Scanner;
-import com.sankuai.mpproduct.mtable.ql.AST;
-import com.sankuai.mpproduct.mtable.ql.Node;
-import com.sankuai.mpproduct.mtable.core.OpType;
-import com.sankuai.mpproduct.mtable.ql.Querier;
-import com.sankuai.mpproduct.mtable.schema.Schema;
+import com.company.mtable.ql.AST;
+import com.company.mtable.ql.Node;
+import com.company.mtable.ql.Querier;
+import com.company.mtable.schema.Schema;
 
 import java.util.*;
 

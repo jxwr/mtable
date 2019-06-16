@@ -1,9 +1,6 @@
-package com.sankuai.mpproduct.mtable.core;
+package com.company.mtable.core;
 
-import com.sankuai.mpproduct.mtable.schema.Schema;
-
-import java.nio.ByteBuffer;
-import java.util.List;
+import com.company.mtable.schema.Schema;
 
 public class Record {
 

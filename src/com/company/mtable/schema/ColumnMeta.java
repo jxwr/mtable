@@ -1,4 +1,4 @@
-package com.sankuai.mpproduct.mtable.schema;
+package com.company.mtable.schema;
 
 public class ColumnMeta {
 

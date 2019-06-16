@@ -1,14 +1,11 @@
-package com.sankuai.mpproduct.mtable.schema;
+package com.company.mtable.schema;
 
-import com.sankuai.mpproduct.mtable.core.IndexValue;
-import com.sun.xml.internal.ws.api.message.ExceptionHasMessage;
+import com.company.mtable.core.IndexValue;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class Schema {
     private String tableName;
