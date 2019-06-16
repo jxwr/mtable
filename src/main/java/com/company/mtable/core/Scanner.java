@@ -9,7 +9,7 @@ public abstract class Scanner {
     public void init(Schema schema) {
     }
 
-    protected abstract void handle(Schema schema, Record record);
+    public abstract void handle(Schema schema, Record record);
 
     public ResultSet finish(Schema schema) {
         return resultSet;

@@ -1,5 +1,6 @@
 package com.company;
 
+import com.company.mtable.core.Compiler;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -183,11 +184,28 @@ public class Main {
         //testDictArray(schema, bucket);
     }
 
+    public static void testCodegen() {
+         Compiler compiler = new Compiler();
+         Scanner s = compiler.compileAndLoadScanner("" +
+                 "private int sum = 0;" +
+                 "public void init(Schema schema) { " +
+                 "    System.out.println(\"Init\"); " +
+                 "    sum++;" +
+                 "} " +
+                 "public void handle(Schema schema, Record record) { " +
+                 "    System.out.println(\"Sum: \" + sum); " +
+                 "} "
+         );
+        s.init(null);
+        s.handle(null, null);
+    }
+
     public static void main(String[] args) {
         //testKMap();
         //testMapList();
 
-        testBucketScan();
-        //testBucketUpdate();
+        // testBucketScan();
+        // testBucketUpdate();
+        testCodegen();
     }
 }
