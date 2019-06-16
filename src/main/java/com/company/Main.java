@@ -1,9 +1,10 @@
 package com.company;
 
-import com.company.mtable.core.*;
-import com.company.mtable.core.Scanner;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import com.company.mtable.core.*;
+import com.company.mtable.core.Scanner;
 import com.company.mtable.ql.AST;
 import com.company.mtable.ql.Node;
 import com.company.mtable.ql.Querier;
