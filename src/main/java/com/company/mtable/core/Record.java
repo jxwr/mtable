@@ -1,14 +1,21 @@
 package com.company.mtable.core;
 
+import com.company.mtable.exception.InvalidUniqueIndexException;
 import com.company.mtable.schema.Schema;
 
 public class Record {
 
-    public Record(Object[] values) {
+    private Record(Object[] values) {
         this.values = values;
     }
 
-    private Object[] values;
+    public Object get(int cid) {
+        return values[cid];
+    }
+
+    public void set(int cid, Object value) {
+        this.values[cid] = value;
+    }
 
     public IndexValue uniqueIndexValue(Schema schema) {
         int[] cids = schema.getUniqueIndexCids();
@@ -16,23 +23,13 @@ public class Record {
 
         int i = 0;
         for (Integer cid : cids) {
+            if (values[cid] == null) {
+                throw new InvalidUniqueIndexException();
+            }
             ival.setValue(i++, values[cid]);
         }
 
         return ival;
-    }
-
-    public Object getValue(int cid) {
-        return values[cid];
-    }
-
-    public void setValue(int cid, Object value) {
-        this.values[cid] = value;
-    }
-
-    public static Record newRecord(Schema schema) {
-        Object[] values = new Object[schema.getColumns().size()];
-        return new Record(values);
     }
 
     @Override
@@ -47,4 +44,11 @@ public class Record {
         sb.append(')');
         return sb.toString();
     }
+
+    public static Record newRecord(Schema schema) {
+        Object[] values = new Object[schema.getColumns().size()];
+        return new Record(values);
+    }
+
+    private Object[] values;
 }

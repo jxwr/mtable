@@ -1,5 +1,7 @@
-package com.company.mtable.core;
+package com.company.mtable.core.scanners;
 
+import com.company.mtable.core.Record;
+import com.company.mtable.core.Scanner;
 import com.company.mtable.schema.ColumnMeta;
 import com.company.mtable.schema.Schema;
 
@@ -8,7 +10,7 @@ import java.util.List;
 /**
  * Created by jxwr on 2019/6/16.
  */
-public class TablePrinter extends Scanner {
+public class TablePrinter implements Scanner {
     private boolean firstline = true;
 
     private int minRowLen(ColumnMeta c) {
@@ -17,8 +19,13 @@ public class TablePrinter extends Scanner {
     }
 
     @Override
-    public void handle(Schema schema, Record record) {
-        if (record == null) return;
+    public void init(Schema schema) {
+
+    }
+
+    @Override
+    public boolean handle(Schema schema, Record record) {
+        if (record == null) return true;
 
         List<ColumnMeta> cs = schema.getColumns();
 
@@ -36,11 +43,17 @@ public class TablePrinter extends Scanner {
         }
 
         for (int cid = 0; cid < cs.size(); cid++) {
-            System.out.printf("%" + minRowLen(cs.get(cid)) + "s|", record.getValue(cid) + "");
+            System.out.printf("%" + minRowLen(cs.get(cid)) + "s|", record.get(cid) + "");
         }
         println();
 
         printline(cs, '|');
+        return true;
+    }
+
+    @Override
+    public void finish(Schema schema) {
+
     }
 
     private void printline(List<ColumnMeta> cs, char ch) {

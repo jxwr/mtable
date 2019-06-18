@@ -1,21 +1,13 @@
 package com.company.mtable.core;
 
+import com.company.mtable.core.Record;
 import com.company.mtable.schema.Schema;
 
-public abstract class Scanner {
+public interface Scanner {
 
-    private ResultSet resultSet = new ResultSet();
+    void init(Schema schema);
 
-    public void init(Schema schema) {
-    }
+    boolean handle(Schema schema, Record record);
 
-    public abstract void handle(Schema schema, Record record);
-
-    public ResultSet finish(Schema schema) {
-        return resultSet;
-    }
-
-    public ResultSet getResultSet() {
-        return resultSet;
-    }
+    void finish(Schema schema);
 }

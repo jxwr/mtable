@@ -1,6 +1,7 @@
 package com.company.mtable.ql;
 
 import com.company.mtable.core.*;
+import com.company.mtable.core.Scanner;
 import com.company.mtable.schema.Schema;
 
 import java.util.*;
@@ -12,9 +13,9 @@ public class Querier {
 
     private Schema schema;
 
-    private Bucket bucket;
+    private SkipListBucket bucket;
 
-    public Querier(Schema schema, Bucket bucket) {
+    public Querier(Schema schema, SkipListBucket bucket) {
         this.schema = schema;
         this.bucket = bucket;
     }
@@ -27,7 +28,7 @@ public class Querier {
         for (Node node : namedDictArray.getNodes()) {
             if (node.getType() == NodeType.FIELD) {
                 NamedField c = node.asNamedField();
-                valueDict.putFieldData(c.getName(), record.getValue(schema.cid(c.getName())));
+                valueDict.putFieldData(c.getName(), record.get(schema.cid(c.getName())));
             }
         }
 
@@ -51,7 +52,7 @@ public class Querier {
         DictData inner = outer.getOrCreateDict(namedDictByKey.getName());
 
         String key = namedDictByKey.getKey();
-        Object keyData = record.getValue(schema.cid(key));
+        Object keyData = record.get(schema.cid(key));
 
         DictData valueDict = inner.getOrCreateDict(keyData);
 
@@ -59,7 +60,7 @@ public class Querier {
             switch (node.getType()) {
                 case FIELD:
                     NamedField c = node.asNamedField();
-                    valueDict.putFieldData(c.getName(), record.getValue(schema.cid(c.getName())));
+                    valueDict.putFieldData(c.getName(), record.get(schema.cid(c.getName())));
                     break;
                 case DICT_BY_KEY:
                     NamedDictByKey km = node.asNamedDictByKey();
@@ -74,7 +75,7 @@ public class Querier {
     }
 
     public Map<Object, Object> query(Node root) {
-        ResultSet resultSet = bucket.scan(schema, Collections.emptyList(), new com.company.mtable.core.Scanner() {
+        ResultSet resultSet = bucket.scan(schema, Collections.emptyList(), new Scanner() {
             private DictData resultDict;
             private ResultSet resultSet;
 
@@ -94,11 +95,11 @@ public class Querier {
 
             @Override
             public ResultSet finish(Schema schema) {
-                resultSet.setResults(Collections.singletonList(resultDict.toMap()));
+                //resultSet.setResults(Collections.singletonList(resultDict.toMap()));
                 return resultSet;
             }
         });
 
-        return (Map<Object, Object>)resultSet.getResults().get(0);
+        return (Map<Object, Object>)resultSet.resultRows().get(0);
     }
 }
