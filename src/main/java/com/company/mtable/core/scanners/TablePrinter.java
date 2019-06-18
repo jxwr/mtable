@@ -2,7 +2,7 @@ package com.company.mtable.core.scanners;
 
 import com.company.mtable.core.Record;
 import com.company.mtable.core.Scanner;
-import com.company.mtable.schema.ColumnMeta;
+import com.company.mtable.schema.Column;
 import com.company.mtable.schema.Schema;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 public class TablePrinter implements Scanner {
     private boolean firstline = true;
 
-    private int minRowLen(ColumnMeta c) {
+    private int minRowLen(Column c) {
         int len = (c.getName().length()+2);
         return len < 10 ? 10 : len;
     }
@@ -27,13 +27,13 @@ public class TablePrinter implements Scanner {
     public boolean handle(Schema schema, Record record) {
         if (record == null) return true;
 
-        List<ColumnMeta> cs = schema.getColumns();
+        List<Column> cs = schema.getColumns();
 
         if (firstline) {
             System.out.printf("\nResults of table %s:\n", schema.getTableName());
             printline(cs, '-');
 
-            for (ColumnMeta c : cs) {
+            for (Column c : cs) {
                 System.out.printf("%" + minRowLen(c) + "s|", c.getName());
             }
             println();
@@ -56,8 +56,8 @@ public class TablePrinter implements Scanner {
 
     }
 
-    private void printline(List<ColumnMeta> cs, char ch) {
-        for (ColumnMeta c : cs) {
+    private void printline(List<Column> cs, char ch) {
+        for (Column c : cs) {
             print(minRowLen(c), '-');
             print(1, ch);
         }

@@ -1,6 +1,6 @@
 package com.company.mtable.core;
 
-import com.company.mtable.schema.ColumnMeta;
+import com.company.mtable.schema.Column;
 
 import java.util.Collection;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
  * Created by jxwr on 2019/6/16.
  */
 public class ResultSet {
-    private List<ColumnMeta> columns;
+    private List<Column> columns;
 
     private List<ResultRow> resultRows;
 

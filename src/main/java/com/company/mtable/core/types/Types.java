@@ -1,10 +1,20 @@
 package com.company.mtable.core.types;
 
 /**
- * Created by jxwr on 2019/6/18.
+ * Companion Objects
  */
-public class Types {
-    public final static DataType LongType = new LongType();
+public interface Types {
+    DataType LongType = new LongType();
 
-    public final static DataType IntegerType = new IntegerType();
+    DataType IntegerType = new IntegerType();
+
+    DataType ShortType = new ShortType();
+
+    DataType ByteType = new ByteType();
+
+    DataType BooleanType = new BooleanType();
+
+    DataType StringType = new StringType();
+
+    DataType DateType = new DateType();
 }

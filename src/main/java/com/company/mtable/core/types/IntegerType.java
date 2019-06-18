@@ -6,11 +6,11 @@ package com.company.mtable.core.types;
 public class IntegerType extends NumericType {
     @Override
     public String typeName() {
-        return "Integer";
+        return type().getTypeName();
     }
 
     @Override
-    public Class<?> type() {
-        return Integer.class;
+    public Class<Integer> type() {
+        return Integer.TYPE;
     }
 }

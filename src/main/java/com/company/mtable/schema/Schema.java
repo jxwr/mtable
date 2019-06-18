@@ -1,6 +1,7 @@
 package com.company.mtable.schema;
 
 import com.company.mtable.core.IndexValue;
+import com.company.mtable.core.types.DataType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,68 +9,56 @@ import java.util.List;
 import java.util.Map;
 
 public class Schema {
+
     private String tableName;
 
     public Schema(String tableName) {
         this.tableName = tableName;
     }
 
-    private Map<Integer, ColumnMeta> columnIdMap = new HashMap<>();
+    private Map<Integer, Column> columnIdMap = new HashMap<>();
 
-    private Map<String, ColumnMeta> columnNameMap = new HashMap<>();
+    private Map<String, Column> columnNameMap = new HashMap<>();
 
-    private List<ColumnMeta> columns = new ArrayList<>();
+    private List<Column> columns = new ArrayList<>();
 
-    private ColumnMeta partitionColumn;
+    private Column partitionColumn;
 
-    private ColumnMeta[] uniqueIndexColumns;
+    private Column[] uniqueIndexColumns;
 
     private int[] uniqueIndexCids;
 
-    private int uniqueIndexBufferSize = 0;
-
-    public ColumnMeta addColumn(String name, Class<?> type) {
-        ColumnMeta col = new ColumnMeta(columns.size(), name, type);
+    public Schema addColumn(String name, DataType type) {
+        Column col = new Column(columns.size(), name, type);
         columnIdMap.put(columns.size(), col);
         columnNameMap.put(name, col);
         columns.add(col);
-        return col;
+        return this;
     }
 
-    public ColumnMeta getPartitionColumn() {
+    public Column getPartitionColumn() {
         return partitionColumn;
     }
 
-    public void setPartitionKey(String partitionKey) {
+    public Schema setPartitionKey(String partitionKey) {
         this.partitionColumn = columnNameMap.get(partitionKey);
+        return this;
     }
 
-    public ColumnMeta[] getUniqueIndexColumns() {
+    public Column[] getUniqueIndexColumns() {
         return uniqueIndexColumns;
     }
 
     public void setUniqueIndexKeys(List<String> uniqueIndexKeys) {
         int count = uniqueIndexKeys.size();
-        this.uniqueIndexColumns = new ColumnMeta[count];
+        this.uniqueIndexColumns = new Column[count];
         this.uniqueIndexCids = new int[count];
 
         for (int i = 0; i < count; i++) {
             String key = uniqueIndexKeys.get(i);
-            ColumnMeta col = columnNameMap.get(key);
+            Column col = columnNameMap.get(key);
             uniqueIndexColumns[i] = col;
             uniqueIndexCids[i] = col.getCid();
-
-            if (col.getType().equals(Integer.class)) {
-                uniqueIndexBufferSize += 4;
-            } else if (col.getType().equals(Long.class)) {
-                uniqueIndexBufferSize += 8;
-            } else if (col.getType().equals(Short.class)) {
-                uniqueIndexBufferSize += 2;
-            } else if (col.getType().equals(Byte.class)) {
-                uniqueIndexBufferSize += 1;
-            } else {
-                throw new RuntimeException("Unsupported type for unique index.");
-            }
         }
     }
 
@@ -81,11 +70,11 @@ public class Schema {
         return columnNameMap.get(name).getCid();
     }
 
-    public ColumnMeta getColumn(int cid) {
+    public Column getColumn(int cid) {
         return columnIdMap.get(cid);
     }
 
-    public ColumnMeta getColumn(String cname) {
+    public Column getColumn(String cname) {
         return columnNameMap.get(cname);
     }
 
@@ -97,7 +86,7 @@ public class Schema {
         return this.uniqueIndexCids;
     }
 
-    public List<ColumnMeta> getColumns() {
+    public List<Column> getColumns() {
         return columns;
     }
 }

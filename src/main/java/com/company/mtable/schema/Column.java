@@ -2,9 +2,9 @@ package com.company.mtable.schema;
 
 import com.company.mtable.core.types.DataType;
 
-public class ColumnMeta {
+public class Column {
 
-    public ColumnMeta(int cid, String name, DataType type) {
+    public Column(int cid, String name, DataType type) {
         this.cid = cid;
         this.name = name;
         this.type = type;

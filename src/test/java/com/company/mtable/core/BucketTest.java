@@ -1,6 +1,8 @@
 package com.company.mtable.core;
 
 import com.company.mtable.schema.Schema;
+import static com.company.mtable.core.types.Types.*;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,12 +25,12 @@ public class BucketTest {
     private static Schema newSchema() {
         Schema schema = new Schema("product_info");
 
-        schema.addColumn("poi_id", Integer.class);
-        schema.addColumn("product_id", Integer.class);
-        schema.addColumn("customer_id", Integer.class);
-        schema.addColumn("date", Integer.class);
-        schema.addColumn("trade_type", Integer.class);
-        schema.addColumn("selling_price", Integer.class);
+        schema.addColumn("poi_id", IntegerType);
+        schema.addColumn("product_id", IntegerType);
+        schema.addColumn("customer_id", IntegerType);
+        schema.addColumn("date", IntegerType);
+        schema.addColumn("trade_type", IntegerType);
+        schema.addColumn("selling_price", IntegerType);
 
         schema.setPartitionKey("poi_id");
         schema.setUniqueIndexKeys(Arrays.asList("date", "product_id"));

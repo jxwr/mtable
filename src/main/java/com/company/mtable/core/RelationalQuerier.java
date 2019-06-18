@@ -1,6 +1,6 @@
 package com.company.mtable.core;
 
-import com.company.mtable.schema.ColumnMeta;
+import com.company.mtable.schema.Column;
 import com.company.mtable.schema.Schema;
 
 import java.util.List;
@@ -8,13 +8,13 @@ import java.util.List;
 /**
  * Created by jxwr on 2019/6/18.
  */
-public class AggregateScanner implements Scanner {
+public class RelationalQuerier implements Scanner {
 
-    public void addProjection(ColumnMeta cmeta) {
+    public void addProjection(Column col) {
 
     }
 
-    public void setGroupBy(List<ColumnMeta> groupBy) {
+    public void setGroupBy(List<Column> groupBy) {
 
     }
 
