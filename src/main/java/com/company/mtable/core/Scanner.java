@@ -1,6 +1,5 @@
 package com.company.mtable.core;
 
-import com.company.mtable.core.Record;
 import com.company.mtable.schema.Schema;
 
 public interface Scanner {

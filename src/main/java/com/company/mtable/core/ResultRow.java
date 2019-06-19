@@ -41,7 +41,7 @@ public class ResultRow {
         sb.append('(');
         for (int i = 0; i < values.length; i++) {
             sb.append(values[i]);
-            if (i == values.length-1) {
+            if (i < values.length-1) {
                 sb.append(',');
             }
         }

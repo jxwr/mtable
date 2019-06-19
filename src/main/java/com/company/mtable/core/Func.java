@@ -14,6 +14,4 @@ public interface Func {
     List<DataType> inType();
 
     DataType outType();
-
-    Object apply(Object[] params);
 }

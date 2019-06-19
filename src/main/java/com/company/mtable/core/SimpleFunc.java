@@ -12,4 +12,6 @@ public abstract class SimpleFunc implements Func {
     public boolean isAggr() {
         return false;
     }
+
+    public abstract Object apply(Object[] params);
 }

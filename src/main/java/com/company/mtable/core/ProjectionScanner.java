@@ -5,7 +5,6 @@ import com.company.mtable.schema.Column;
 import com.company.mtable.schema.Schema;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -54,6 +53,7 @@ public class ProjectionScanner implements Scanner {
         }
 
         resultSet.addResultRow(row);
+
         return true;
     }
 

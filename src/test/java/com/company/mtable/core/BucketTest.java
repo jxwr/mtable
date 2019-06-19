@@ -76,7 +76,7 @@ public class BucketTest {
 
             record.set(schema.cid("poi_id"), i);
             record.set(schema.cid("product_id"), i);
-            record.set(schema.cid("customer_id"), i);
+            record.set(schema.cid("customer_id"), i * 203);
             record.set(schema.cid("date"), i%2);
             record.set(schema.cid("trade_type"), i);
             record.set(schema.cid("selling_price"), i);
@@ -193,7 +193,7 @@ public class BucketTest {
         scanner.addProjection(col, "gid");
         scanner.addProjection(Mul, Arrays.asList(
                 col,
-                Integer.valueOf(2)
+                2
         ), "gid_mod");
 
         bucket.scan(schema, Collections.emptyList(), scanner);
@@ -207,8 +207,10 @@ public class BucketTest {
         bucket.printTable(schema);
 
         Column col = new Column(1, "product_id", IntegerType);
+        Column col2 = new Column(2, "customer_id", IntegerType);
 
         scanner.addProjection(col);
+        scanner.addProjection(col2, "kid");
         scanner.addProjection(Mul, Arrays.asList(
                 col,
                 2L
@@ -216,7 +218,7 @@ public class BucketTest {
 
         scanner.addProjection(Mod, Arrays.asList(
                 col,
-                3L
+                3
         ), "gid_mod_3");
 
         bucket.scan(schema, Collections.emptyList(), scanner);
@@ -224,4 +226,40 @@ public class BucketTest {
         scanner.getResultSet().printTable();
     }
 
+    @Test
+    public void scanAggregateScanner() throws Exception {
+        AggregateScanner scanner = new AggregateScanner();
+
+        SkipListBucket bucket = mkBucket();
+        bucket.printTable(schema);
+
+        Column col = new Column(1, "product_id", IntegerType);
+        Column col2 = new Column(2, "customer_id", IntegerType);
+
+        //scanner.addProjection(col);
+        //scanner.addProjection(col2, "kid");
+        scanner.addProjection(Sum, Arrays.asList(
+                col,
+                2L
+        ), "sum_pid");
+
+        scanner.addProjection(Count, Arrays.asList(
+                col2,
+                3
+        ), "count_cid");
+
+        scanner.addProjection(Avg, Arrays.asList(
+                col2,
+                3
+        ), "avg_cid");
+
+        scanner.addProjection(Sum, Arrays.asList(
+                col2,
+                3
+        ), "sum_cid");
+
+        bucket.scan(schema, Collections.emptyList(), scanner);
+
+        scanner.getResultSet().printTable();
+    }
 }

@@ -5,4 +5,12 @@ public abstract class AggragateFunc implements Func {
     public boolean isAggr() {
         return true;
     }
+
+    public abstract void init();
+
+    public abstract boolean handle(Object[] params);
+
+    public abstract Object finish();
+
+    public abstract AggragateFunc copy();
 }

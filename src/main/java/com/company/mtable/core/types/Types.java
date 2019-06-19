@@ -22,4 +22,6 @@ public interface Types {
     DataType DateType = new DateType();
 
     DataType NumberType = new NumberType();
+
+    DataType AnyType = new AnyType();
 }
