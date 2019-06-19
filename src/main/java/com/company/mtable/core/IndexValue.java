@@ -28,6 +28,7 @@ public class IndexValue implements Comparable<IndexValue> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public int compareTo(IndexValue that) {
         for (int i = 0; i < values.length; i++) {
             Comparable left = (Comparable) this.getValue(i);
@@ -54,6 +55,10 @@ public class IndexValue implements Comparable<IndexValue> {
 
     @Override
     public boolean equals(Object that) {
+        if (!that.getClass().equals(this.getClass())) {
+            return false;
+        }
+
         for (int i = 0; i < values.length; i++) {
             if (!this.getValue(i).equals(((IndexValue)that).getValue(i))) {
                 return false;

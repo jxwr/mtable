@@ -1,12 +1,16 @@
 package com.company.mtable.core;
 
+
+import com.company.mtable.schema.Column;
 import com.company.mtable.schema.Schema;
 import static com.company.mtable.core.types.Types.*;
+import static com.company.mtable.core.funcs.Funcs.*;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -178,7 +182,46 @@ public class BucketTest {
     }
 
     @Test
-    public void scanScanner() throws Exception {
+    public void scanProjectionScanner1() throws Exception {
+        ProjectionScanner scanner = new ProjectionScanner();
+
+        SkipListBucket bucket = mkBucket();
+        bucket.printTable(schema);
+
+        Column col = new Column(1, "product_id", IntegerType);
+
+        scanner.addProjection(col, "gid");
+        scanner.addProjection(Mul, Arrays.asList(
+                col,
+                Integer.valueOf(2)
+        ), "gid_mod");
+
+        bucket.scan(schema, Collections.emptyList(), scanner);
+    }
+
+    @Test
+    public void scanProjectionScanner2() throws Exception {
+        ProjectionScanner scanner = new ProjectionScanner();
+
+        SkipListBucket bucket = mkBucket();
+        bucket.printTable(schema);
+
+        Column col = new Column(1, "product_id", IntegerType);
+
+        scanner.addProjection(col);
+        scanner.addProjection(Mul, Arrays.asList(
+                col,
+                2L
+        ), "gid_mul");
+
+        scanner.addProjection(Mod, Arrays.asList(
+                col,
+                3L
+        ), "gid_mod_3");
+
+        bucket.scan(schema, Collections.emptyList(), scanner);
+
+        scanner.getResultSet().printTable();
     }
 
 }

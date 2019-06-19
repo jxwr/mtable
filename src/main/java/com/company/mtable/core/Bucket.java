@@ -10,6 +10,7 @@ import java.util.List;
  * Created by jxwr on 2019/6/18.
  */
 public interface Bucket {
+
     void put(Schema schema, Record record);
 
     Record get(Schema schema, List<Filter> filters) throws InvalidPartitionFilterException;

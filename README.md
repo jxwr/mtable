@@ -1,12 +1,12 @@
 test memdb
 
 ##### TODO
-* projection
+* projection ✔
 * aggregate, groupby
 * datatype, list map tuple date
 * udf / udaf
 * bucket支持一个range, 避免太多map
-* grpahgl / mql
+* graphql / mql
 * multi index
 * dml
 * query on complex type
