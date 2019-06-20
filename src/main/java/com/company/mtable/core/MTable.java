@@ -75,6 +75,17 @@ public class MTable {
         return bucket.scan(schema, filters);
     }
 
+    public void scan(List<Filter> filters, Scanner scanner) {
+        short bid = getBucketId(filters);
+
+        Bucket bucket = buckets.get(bid);
+        if (bucket == null) {
+            return;
+        }
+
+        bucket.scan(schema, filters, scanner);
+    }
+
     private short getBucketId(List<Filter> filters) {
         for (Filter f : filters) {
             if (f.getCid() == schema.getPartitionColumn().getCid()) {

@@ -3,10 +3,11 @@ test memdb
 ##### TODO
 * projection ✔
 * aggregate, groupby ✔
+* mtable api ✔
 * 类型处理有问题
 * datatype, list map tuple date
 * udf / udaf
-* bucket支持一个range, 避免太多map
+* bucket支持一个range, 避免太多map ✔
 * graphql / mql
 * multi index
 * dml
