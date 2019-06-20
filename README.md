@@ -2,7 +2,7 @@ test memdb
 
 ##### TODO
 * projection ✔
-* aggregate, groupby
+* aggregate, groupby ✔
 * 类型处理有问题
 * datatype, list map tuple date
 * udf / udaf

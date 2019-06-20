@@ -86,57 +86,6 @@ public class BucketTest {
         return bucket;
     }
 
-    private SkipListBucket mkBucketRealData() {
-        SkipListBucket bucket = new SkipListBucket();
-
-        Record record;
-
-        for (int i = 0; i < 10; i++) {
-            record = Record.newRecord(schema);
-            record.set(schema.cid("poi_id"), 100100);
-            record.set(schema.cid("product_id"), 300100);
-            record.set(schema.cid("customer_id"), 33);
-            record.set(schema.cid("date"), 20190523+i);
-            record.set(schema.cid("trade_type"), 1);
-            record.set(schema.cid("selling_price"), 228+i*10);
-            bucket.put(schema, record);
-        }
-
-        for (int i = 0; i < 10; i++) {
-            record = Record.newRecord(schema);
-            record.set(schema.cid("poi_id"), 100100);
-            record.set(schema.cid("product_id"), 300200);
-            record.set(schema.cid("customer_id"), 33);
-            record.set(schema.cid("date"), 20190523+i);
-            record.set(schema.cid("trade_type"), 1);
-            record.set(schema.cid("selling_price"), 78+i*10);
-            bucket.put(schema, record);
-        }
-
-        for (int i = 0; i < 10; i++) {
-            record = Record.newRecord(schema);
-            record.set(schema.cid("poi_id"), 100100);
-            record.set(schema.cid("product_id"), 300300);
-            record.set(schema.cid("customer_id"), 33);
-            record.set(schema.cid("date"), 20190523+i);
-            record.set(schema.cid("trade_type"), 1);
-            record.set(schema.cid("selling_price"), 58+i*10);
-            bucket.put(schema, record);
-        }
-
-        for (int i = 0; i < 5; i++) {
-            record = Record.newRecord(schema);
-            record.set(schema.cid("poi_id"), 100100);
-            record.set(schema.cid("product_id"), 300400);
-            record.set(schema.cid("customer_id"), 33);
-            record.set(schema.cid("date"), 20190526+i);
-            record.set(schema.cid("trade_type"), 2);
-            record.set(schema.cid("selling_price"), 138+i*10);
-            bucket.put(schema, record);
-        }
-        return bucket;
-    }
-
     @Test
     public void deleteIndexPrefix() throws Exception {
         SkipListBucket bucket = mkBucket();
@@ -297,6 +246,57 @@ public class BucketTest {
         scanner.getResultSet().printTable();
     }
 
+    private SkipListBucket mkBucketRealData() {
+        SkipListBucket bucket = new SkipListBucket();
+
+        Record record;
+
+        for (int i = 0; i < 10; i++) {
+            record = Record.newRecord(schema);
+            record.set(schema.cid("poi_id"), 100100);
+            record.set(schema.cid("product_id"), 300100);
+            record.set(schema.cid("customer_id"), 33);
+            record.set(schema.cid("date"), 20190523+i);
+            record.set(schema.cid("trade_type"), 1);
+            record.set(schema.cid("selling_price"), 228+i*10);
+            bucket.put(schema, record);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            record = Record.newRecord(schema);
+            record.set(schema.cid("poi_id"), 100100);
+            record.set(schema.cid("product_id"), 300200);
+            record.set(schema.cid("customer_id"), 33);
+            record.set(schema.cid("date"), 20190523+i);
+            record.set(schema.cid("trade_type"), 1);
+            record.set(schema.cid("selling_price"), 78+i*10);
+            bucket.put(schema, record);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            record = Record.newRecord(schema);
+            record.set(schema.cid("poi_id"), 100100);
+            record.set(schema.cid("product_id"), 300300);
+            record.set(schema.cid("customer_id"), 33);
+            record.set(schema.cid("date"), 20190523+i);
+            record.set(schema.cid("trade_type"), 1);
+            record.set(schema.cid("selling_price"), 58+i*10);
+            bucket.put(schema, record);
+        }
+
+        for (int i = 0; i < 5; i++) {
+            record = Record.newRecord(schema);
+            record.set(schema.cid("poi_id"), 100100);
+            record.set(schema.cid("product_id"), 300400);
+            record.set(schema.cid("customer_id"), 33);
+            record.set(schema.cid("date"), 20190526+i);
+            record.set(schema.cid("trade_type"), 2);
+            record.set(schema.cid("selling_price"), 138+i*10);
+            bucket.put(schema, record);
+        }
+        return bucket;
+    }
+
     @Test
     public void scanAggregateScannerByGroup() throws Exception {
         AggregateScanner scanner = new AggregateScanner();
@@ -317,10 +317,21 @@ public class BucketTest {
         scanner.addProjection(Max, Collections.singletonList(price_col), "max_price");
         scanner.addProjection(Min, Collections.singletonList(price_col), "min_price");
 
-        bucket.scan(schema, Collections.emptyList(), scanner);
+        int dateCid = schema.cid("date");
+        bucket.scan(schema, Arrays.asList(
+                new Filter(dateCid, OpType.GT, 20190525),
+                new Filter(dateCid, OpType.LT, 20190530)
+                ), scanner);
 
         List<ResultRow> resultRows = scanner.getResultSet().resultRows();
+
         ResultRow resultRow = resultRows.get(0);
+        assertEquals(resultRow.get(0), 300100);
+        assertEquals(resultRow.get(1), 4);
+        assertEquals(resultRow.get(2), 273L);
+        assertEquals(resultRow.get(3), 1092L);
+        assertEquals(resultRow.get(4), 288);
+        assertEquals(resultRow.get(5), 258);
 
         scanner.getResultSet().printTable();
     }
