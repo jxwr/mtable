@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class TablePrinter implements Scanner {
     private boolean firstline = true;
+    private boolean hideHeader = false;
 
     private int minRowLen(Column c) {
         int len = (c.getName().length()+2);
@@ -29,7 +30,7 @@ public class TablePrinter implements Scanner {
 
         List<Column> cs = schema.getColumns();
 
-        if (firstline) {
+        if (firstline && !hideHeader) {
             System.out.printf("\nResults of table %s:\n", schema.getTableName());
             printline(cs, '-');
 
@@ -72,5 +73,9 @@ public class TablePrinter implements Scanner {
 
     private void println() {
         System.out.println();
+    }
+
+    public void setHideHeader(boolean hideHeader) {
+        this.hideHeader = hideHeader;
     }
 }

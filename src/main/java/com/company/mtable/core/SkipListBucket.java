@@ -210,11 +210,17 @@ public class SkipListBucket implements Bucket {
     }
 
     public void printTable(Schema schema, Filter... filters) {
-        printTable(schema, Arrays.asList(filters));
+        printTable(schema, Arrays.asList(filters), false);
     }
 
-    public void printTable(Schema schema, List<Filter> filters) {
-        scan(schema, filters, new TablePrinter());
+    public void printTable(Schema schema, boolean hideHeader, Filter... filters) {
+        printTable(schema, Arrays.asList(filters), hideHeader);
+    }
+
+    public void printTable(Schema schema, List<Filter> filters, boolean hideHeader) {
+        TablePrinter tablePrinter = new TablePrinter();
+        tablePrinter.setHideHeader(hideHeader);
+        scan(schema, filters, tablePrinter);
     }
 
     public void printIndexValues(ConcurrentNavigableMap<IndexValue, Record> slice) {

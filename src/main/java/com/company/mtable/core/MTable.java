@@ -12,9 +12,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class MTable {
 
+    private static int NUM_BUCKETS = 4;
+
     private Schema schema;
 
-    private Map<Object, Bucket> buckets;
+    private Map<Short, Bucket> buckets;
 
     public MTable(Schema schema) {
         this.schema = schema;
@@ -22,9 +24,9 @@ public class MTable {
     }
 
     public Record get(List<Filter> filters) {
-        Filter f = popPartitionFilter(filters);
+        short bid = getBucketId(filters);
 
-        Bucket bucket = buckets.get(f.getValue());
+        Bucket bucket = buckets.get(bid);
         if (bucket == null) {
             return null;
         }
@@ -33,17 +35,17 @@ public class MTable {
     }
 
     public void put(Record record) {
-        IndexValue indexValue = record.uniqueIndexValue(schema);
+        long pval = ((Number)record.get(schema.getPartitionColumn().getCid())).longValue();
 
-        Bucket bucket = buckets.computeIfAbsent(indexValue, k -> new SkipListBucket());
+        Bucket bucket = buckets.computeIfAbsent((short)(pval % NUM_BUCKETS), k -> new SkipListBucket());
 
         bucket.put(schema, record);
     }
 
     public int update(List<Filter> filters, List<ColValue> values) {
-        Filter f = popPartitionFilter(filters);
+        short bid = getBucketId(filters);
 
-        Bucket bucket = buckets.get(f.getValue());
+        Bucket bucket = buckets.get(bid);
         if (bucket == null) {
             return 0;
         }
@@ -52,9 +54,9 @@ public class MTable {
     }
 
     public int delete(List<Filter> filters) {
-        Filter f = popPartitionFilter(filters);
+        short bid = getBucketId(filters);
 
-        Bucket bucket = buckets.get(f.getValue());
+        Bucket bucket = buckets.get(bid);
         if (bucket == null) {
             return 0;
         }
@@ -63,9 +65,9 @@ public class MTable {
     }
 
     public List<Record> scan(List<Filter> filters) {
-        Filter f = popPartitionFilter(filters);
+        short bid = getBucketId(filters);
 
-        Bucket bucket = buckets.get(f.getValue());
+        Bucket bucket = buckets.get(bid);
         if (bucket == null) {
             return Collections.emptyList();
         }
@@ -73,20 +75,31 @@ public class MTable {
         return bucket.scan(schema, filters);
     }
 
-    public void scan(List<Filters> filter, Scanner scanner) {
-
-    }
-
-    private Filter popPartitionFilter(List<Filter> filters) throws InvalidPartitionFilterException, NoPartitionFilterFoundException {
+    private short getBucketId(List<Filter> filters) {
         for (Filter f : filters) {
             if (f.getCid() == schema.getPartitionColumn().getCid()) {
                 if (f.getOp() != OpType.EQ)
                     throw new InvalidPartitionFilterException();
-                filters.remove(f);
-                return f;
+                return (short)(((Number)f.getValue()).shortValue() % NUM_BUCKETS);
             }
         }
 
         throw new NoPartitionFilterFoundException();
+    }
+
+    public int size() {
+        int count = 0;
+        for (Bucket bucket : buckets.values()) {
+            count += bucket.size();
+        }
+        return count;
+    }
+
+    public void printTable() {
+        boolean first = true;
+        for (Bucket bucket : buckets.values()) {
+            ((SkipListBucket)bucket).printTable(schema, !first);
+            first = false;
+        }
     }
 }

@@ -321,7 +321,7 @@ public class BucketTest {
         bucket.scan(schema, Arrays.asList(
                 new Filter(dateCid, OpType.GT, 20190525),
                 new Filter(dateCid, OpType.LT, 20190530)
-                ), scanner);
+        ), scanner);
 
         List<ResultRow> resultRows = scanner.getResultSet().resultRows();
 
