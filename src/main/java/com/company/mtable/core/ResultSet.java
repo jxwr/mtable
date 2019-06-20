@@ -29,7 +29,7 @@ public class ResultSet {
         this.resultRows.add(resultRow);
     }
 
-    public Collection<ResultRow> resultRows() {
+    public List<ResultRow> resultRows() {
         return resultRows;
     }
 

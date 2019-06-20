@@ -12,23 +12,30 @@ import java.util.List;
  * Created by jxwr on 2019/6/20.
  */
 public class Max extends AggragateFunc {
-    private long sum;
+    private Object max;
 
     @Override
     public void init() {
-        sum = 0;
+        max = null;
     }
 
     @Override
     public boolean handle(Object[] params) {
-        long val = NumberType.value(params[0]).longValue();
-        sum += val;
+        if (max == null) {
+            max = params[0];
+            return true;
+        }
+
+        Comparable c = (Comparable)params[0];
+        if (c.compareTo(max) > 0) {
+            max = params[0];
+        }
         return true;
     }
 
     @Override
     public Object finish() {
-        return sum;
+        return max;
     }
 
     @Override

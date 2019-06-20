@@ -66,4 +66,33 @@ public class IndexValue implements Comparable<IndexValue> {
         }
         return true;
     }
+
+    @Override
+    public int hashCode() {
+        if (values.length == 1)
+            return values[0].hashCode();
+
+        if (values.length == 2) {
+            int result = (values[0].hashCode() ^ (values[0].hashCode() >>> 16));
+            result = 31 * result + values[1].hashCode();
+            return result;
+        }
+
+        if (values.length == 3) {
+            int result = (values[0].hashCode() ^ (values[0].hashCode() >>> 16));
+            result = 31 * result + values[1].hashCode();
+            result = 31 * result + values[2].hashCode();
+            return result;
+        }
+
+        if (values.length >= 4) {
+            int result = (values[0].hashCode() ^ (values[0].hashCode() >>> 16));
+            result = 31 * result + values[1].hashCode();
+            result = 31 * result + values[2].hashCode();
+            result = 31 * result + values[3].hashCode();
+            return result;
+        }
+
+        return 0x777;
+    }
 }

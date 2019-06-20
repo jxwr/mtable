@@ -16,16 +16,19 @@ public class Min extends AggragateFunc {
 
     @Override
     public void init() {
-        min = 0;
+        min = null;
     }
 
     @Override
     public boolean handle(Object[] params) {
-        if (params[0].getClass().isInstance(Comparable.class)) {
-            Comparable c = (Comparable)params[0];
-            if (c.compareTo(min) < 0) {
-                min = params[0];
-            }
+        if (min == null) {
+            min = params[0];
+            return true;
+        }
+
+        Comparable c = (Comparable)params[0];
+        if (c.compareTo(min) < 0) {
+            min = params[0];
         }
         return true;
     }

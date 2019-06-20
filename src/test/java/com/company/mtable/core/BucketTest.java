@@ -86,6 +86,57 @@ public class BucketTest {
         return bucket;
     }
 
+    private SkipListBucket mkBucketRealData() {
+        SkipListBucket bucket = new SkipListBucket();
+
+        Record record;
+
+        for (int i = 0; i < 10; i++) {
+            record = Record.newRecord(schema);
+            record.set(schema.cid("poi_id"), 100100);
+            record.set(schema.cid("product_id"), 300100);
+            record.set(schema.cid("customer_id"), 33);
+            record.set(schema.cid("date"), 20190523+i);
+            record.set(schema.cid("trade_type"), 1);
+            record.set(schema.cid("selling_price"), 228+i*10);
+            bucket.put(schema, record);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            record = Record.newRecord(schema);
+            record.set(schema.cid("poi_id"), 100100);
+            record.set(schema.cid("product_id"), 300200);
+            record.set(schema.cid("customer_id"), 33);
+            record.set(schema.cid("date"), 20190523+i);
+            record.set(schema.cid("trade_type"), 1);
+            record.set(schema.cid("selling_price"), 78+i*10);
+            bucket.put(schema, record);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            record = Record.newRecord(schema);
+            record.set(schema.cid("poi_id"), 100100);
+            record.set(schema.cid("product_id"), 300300);
+            record.set(schema.cid("customer_id"), 33);
+            record.set(schema.cid("date"), 20190523+i);
+            record.set(schema.cid("trade_type"), 1);
+            record.set(schema.cid("selling_price"), 58+i*10);
+            bucket.put(schema, record);
+        }
+
+        for (int i = 0; i < 5; i++) {
+            record = Record.newRecord(schema);
+            record.set(schema.cid("poi_id"), 100100);
+            record.set(schema.cid("product_id"), 300400);
+            record.set(schema.cid("customer_id"), 33);
+            record.set(schema.cid("date"), 20190526+i);
+            record.set(schema.cid("trade_type"), 2);
+            record.set(schema.cid("selling_price"), 138+i*10);
+            bucket.put(schema, record);
+        }
+        return bucket;
+    }
+
     @Test
     public void deleteIndexPrefix() throws Exception {
         SkipListBucket bucket = mkBucket();
@@ -211,15 +262,8 @@ public class BucketTest {
 
         scanner.addProjection(col);
         scanner.addProjection(col2, "kid");
-        scanner.addProjection(Mul, Arrays.asList(
-                col,
-                2L
-        ), "gid_mul");
-
-        scanner.addProjection(Mod, Arrays.asList(
-                col,
-                3
-        ), "gid_mod_3");
+        scanner.addProjection(Mul, Arrays.asList(col, 2L), "gid_mul");
+        scanner.addProjection(Mod, Arrays.asList(col, 3), "gid_mod_3");
 
         bucket.scan(schema, Collections.emptyList(), scanner);
 
@@ -236,29 +280,47 @@ public class BucketTest {
         Column col = new Column(1, "product_id", IntegerType);
         Column col2 = new Column(2, "customer_id", IntegerType);
 
-        //scanner.addProjection(col);
-        //scanner.addProjection(col2, "kid");
-        scanner.addProjection(Sum, Arrays.asList(
-                col,
-                2L
-        ), "sum_pid");
-
-        scanner.addProjection(Count, Arrays.asList(
-                col2,
-                3
-        ), "count_cid");
-
-        scanner.addProjection(Avg, Arrays.asList(
-                col2,
-                3
-        ), "avg_cid");
-
-        scanner.addProjection(Sum, Arrays.asList(
-                col2,
-                3
-        ), "sum_cid");
+        scanner.addProjection(Sum, Collections.singletonList(col), "sum_pid");
+        scanner.addProjection(Count, Collections.singletonList(col2), "count_cid");
+        scanner.addProjection(Avg, Collections.singletonList(col2), "avg_cid");
+        scanner.addProjection(Sum, Collections.singletonList(col2), "sum_cid");
 
         bucket.scan(schema, Collections.emptyList(), scanner);
+
+        List<ResultRow> resultRows = scanner.getResultSet().resultRows();
+        ResultRow resultRow = resultRows.get(0);
+        assertEquals(resultRow.get(0), 55L);
+        assertEquals(resultRow.get(1), 10);
+        assertEquals(resultRow.get(2), 1116L);
+        assertEquals(resultRow.get(3), 11165L);
+
+        scanner.getResultSet().printTable();
+    }
+
+    @Test
+    public void scanAggregateScannerByGroup() throws Exception {
+        AggregateScanner scanner = new AggregateScanner();
+
+        SkipListBucket bucket = mkBucketRealData();
+        bucket.printTable(schema);
+
+        Column groupCol = schema.getColumn(1);
+        Column price_col = schema.getColumn(5);
+
+        List<Column> groupBy = Arrays.asList(groupCol);
+        scanner.setGroupBy(groupBy);
+
+        scanner.addProjection(groupCol);
+        scanner.addProjection(Count, Collections.singletonList(price_col), "count_price");
+        scanner.addProjection(Avg, Collections.singletonList(price_col), "avg_price");
+        scanner.addProjection(Sum, Collections.singletonList(price_col), "sum_price");
+        scanner.addProjection(Max, Collections.singletonList(price_col), "max_price");
+        scanner.addProjection(Min, Collections.singletonList(price_col), "min_price");
+
+        bucket.scan(schema, Collections.emptyList(), scanner);
+
+        List<ResultRow> resultRows = scanner.getResultSet().resultRows();
+        ResultRow resultRow = resultRows.get(0);
 
         scanner.getResultSet().printTable();
     }

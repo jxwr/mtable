@@ -58,6 +58,7 @@ public class AggregateScanner implements Scanner {
     public boolean handle(Schema schema, Record record) {
         if (groupBy != null) {
             IndexValue indexValue = getGroupIndexValue(record, groupBy);
+
             List<Projection> projections = projectionsGroup.computeIfAbsent(indexValue, k -> cloneProjections());
 
             for (Projection projection : projections) {
@@ -105,7 +106,12 @@ public class AggregateScanner implements Scanner {
     }
 
     private IndexValue getGroupIndexValue(Record record, List<Column> groupBy) {
-        return null;
+        Object[] values = new Object[groupBy.size()];
+        for (int i = 0; i < groupBy.size(); i++) {
+            Column col = groupBy.get(i);
+            values[i] = record.get(col.getCid());
+        }
+        return new IndexValue(values);
     }
 
     private interface Projection {
@@ -149,8 +155,7 @@ public class AggregateScanner implements Scanner {
 
         @Override
         public Object finish(Schema schema) {
-            this.currentRecord.get(col.getCid());
-            return null;
+            return this.currentRecord.get(col.getCid());
         }
 
         @Override
