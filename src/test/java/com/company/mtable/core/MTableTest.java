@@ -207,4 +207,33 @@ public class MTableTest {
 
         querier.getResultSet().printTable();
     }
+
+    @Test
+    public void getUDF() throws Exception {
+        FunctionRegistry.registerUDF("udf_add", "Fn2",
+                "public Object call(Object t1, Object t2) throws Exception { return (Integer)t1 + (Integer)t2;}"
+        );
+
+        Querier querier = new Querier();
+
+        MTable table = mkTableRealData();
+        table.printTable();
+
+        Column tradeTypeCol = schema.column(4);
+        Column dateCol = schema.column(3);
+
+        // select trade_type, udf_add(date, 1000000000) where date > xx and date < xxx
+        querier.addSelection(new Projection(tradeTypeCol, null));
+        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("udf_add"),
+                Arrays.asList(dateCol, 1000000000), null));
+
+        int dateCid = schema.cid("date");
+        table.scan(Arrays.asList(
+                new Filter(schema.getPartitionColumn().getCid(), OpType.EQ, 100100),
+                new Filter(dateCid, OpType.GT, 20190525),
+                new Filter(dateCid, OpType.LT, 20190530)
+        ), querier);
+
+        querier.getResultSet().printTable();
+    }
 }

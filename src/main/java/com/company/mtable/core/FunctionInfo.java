@@ -31,6 +31,7 @@ public class FunctionInfo {
     public static FunctionInfo from(Class funcClass) {
         DataType dataType = returnType(funcClass);
         List<DataType> inputTypes = getInputTypes(funcClass);
+
         boolean isAggregate = isAggregateFunction(funcClass);
 
         return new FunctionInfo(funcClass, dataType, inputTypes, isAggregate);
@@ -73,6 +74,7 @@ public class FunctionInfo {
         List<DataType> types = new ArrayList<>();
         Method[] methods = funcClass.getMethods();
         for (Method method : methods) {
+            System.out.println(funcClass.getName() + " ==> " + method.getName());
             if (method.getName().equals("call") || method.getName().equals("handle")) {
                 Class<?>[] typeClasses = method.getParameterTypes();
                 for (int i = 0; i < typeClasses.length; i++) {

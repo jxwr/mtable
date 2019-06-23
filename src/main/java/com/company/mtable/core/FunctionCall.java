@@ -83,12 +83,6 @@ public class FunctionCall implements Selection {
                 idxs.add(i);
                 cols.add((Column) obj);
             } else {
-                //System.out.println(funcInfo.name() + " => " + funcInfo.inputTypes());
-                System.out.println("" + i + ": " +
-                        funcInfo.name() + " =>> " +
-                        funcInfo.inputTypes().get(i) + " ==>> " +
-                        funcInfo.inputTypes().get(i).value(obj)
-                );
                 paramValues[i] = funcInfo.inputTypes().get(i).value(obj);
             }
         }
