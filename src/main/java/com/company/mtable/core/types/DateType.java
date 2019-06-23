@@ -12,7 +12,22 @@ public class DateType implements DataType {
     }
 
     @Override
-    public Class<?> type() {
+    public Class<?> typeClass() {
         return Date.class;
+    }
+
+    @Override
+    public boolean acceptsType(DataType type) {
+        return type == Types.DateType;
+    }
+
+    @Override
+    public Object value(Object value) {
+        return value;
+    }
+
+    @Override
+    public boolean acceptsValue(Object value) {
+        return value instanceof Date;
     }
 }

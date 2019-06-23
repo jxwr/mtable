@@ -9,8 +9,6 @@ import java.util.Date;
  */
 public interface Types {
 
-    DataType NumericType = new NumericType();
-
     DataType LongType = new LongType();
 
     DataType IntegerType = new IntegerType();
@@ -25,11 +23,7 @@ public interface Types {
 
     DataType DateType = new DateType();
 
-    DataType NumberType = new NumberType();
-
     DataType AnyType = new AnyType();
-
-    DataType TupleType = new TupleType();
 
     static DataType fromClass(Class klass) {
         if (klass.equals(Integer.class)) {
@@ -44,10 +38,6 @@ public interface Types {
             return StringType;
         } else if (klass.equals(Date.class)) {
             return DateType;
-        } else if (klass.equals(Number.class)) {
-            return NumberType;
-        } else if (klass.equals(Tuple2.class)) {
-            return TupleType;
         }
         return AnyType;
     }

@@ -5,7 +5,7 @@ import com.company.mtable.core.fn.AFn1;
 /**
  * Created by jxwr on 2019/6/20.
  */
-public class Sum implements AFn1<Number, Number> {
+public class Sum implements AFn1<Number, Long> {
     private long sum;
 
     public Sum() {
@@ -18,7 +18,7 @@ public class Sum implements AFn1<Number, Number> {
     }
 
     @Override
-    public Number finish() throws Exception {
+    public Long finish() throws Exception {
         return sum;
     }
 }

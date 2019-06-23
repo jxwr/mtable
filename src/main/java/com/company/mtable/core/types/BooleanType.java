@@ -6,11 +6,26 @@ package com.company.mtable.core.types;
 public class BooleanType implements DataType {
     @Override
     public String typeName() {
-        return type().getTypeName();
+        return typeClass().getTypeName();
     }
 
     @Override
-    public Class<Boolean> type() {
+    public Class<Boolean> typeClass() {
         return Boolean.TYPE;
+    }
+
+    @Override
+    public boolean acceptsType(DataType type) {
+        return type == Types.BooleanType;
+    }
+
+    @Override
+    public Object value(Object value) {
+        return value;
+    }
+
+    @Override
+    public boolean acceptsValue(Object value) {
+        return (value instanceof Boolean);
     }
 }

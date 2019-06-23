@@ -82,7 +82,7 @@ public class SkipListBucket implements Bucket {
                 return 0;
 
             for (ColValue cv : values) {
-                record.set(cv.getCid(), cv.getValue());
+                record.set(schema.column(cv.getCid()), cv.getValue());
             }
             records.remove(lower);
             records.put(record.uniqueIndexValue(schema), record);
@@ -96,7 +96,7 @@ public class SkipListBucket implements Bucket {
         for (Map.Entry<IndexValue, Record> entry : slice.entrySet()) {
             if (Filters.filterAll(schema, entry.getValue(), filters)) {
                 for (ColValue cv : values) {
-                    entry.getValue().set(cv.getCid(), cv.getValue());
+                    entry.getValue().set(schema.column(cv.getCid()), cv.getValue());
                 }
                 oldIndexToNewRecord.put(entry.getKey(), entry.getValue());
                 affectedRows++;
@@ -121,7 +121,7 @@ public class SkipListBucket implements Bucket {
                 return 0;
 
             for (ColValue cv : values) {
-                record.set(cv.getCid(), cv.getValue());
+                record.set(schema.column(cv.getCid()), cv.getValue());
             }
             return 1;
         }
@@ -131,7 +131,7 @@ public class SkipListBucket implements Bucket {
         for (Record record : slice.values()) {
             if (Filters.filterAll(schema, record, filters)) {
                 for (ColValue cv : values) {
-                    record.set(cv.getCid(), cv.getValue());
+                    record.set(schema.column(cv.getCid()), cv.getValue());
                 }
                 affectedRows++;
             }

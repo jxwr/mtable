@@ -1,6 +1,7 @@
 package com.company.mtable.core;
 
 import com.company.mtable.exception.InvalidUniqueIndexException;
+import com.company.mtable.schema.Column;
 import com.company.mtable.schema.Schema;
 
 public class Record {
@@ -13,8 +14,9 @@ public class Record {
         return values[cid];
     }
 
-    public void set(int cid, Object value) {
-        this.values[cid] = value;
+    public void set(Column col, Object value) {
+        int cid = col.getCid();
+        this.values[cid] = col.getType().value(value);
     }
 
     public IndexValue uniqueIndexValue(Schema schema) {

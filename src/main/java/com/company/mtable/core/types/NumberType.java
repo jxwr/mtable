@@ -3,18 +3,15 @@ package com.company.mtable.core.types;
 /**
  * Created by jxwr on 2019/6/19.
  */
-public class NumberType extends NumericType {
+public abstract class NumberType implements DataType {
+
     @Override
-    public String typeName() {
-        return "NumberType";
+    public boolean acceptsType(DataType type) {
+        return type instanceof NumberType;
     }
 
     @Override
-    public Class<?> type() {
-        return Number.class;
-    }
-
-    public static Number value(Object obj) {
-        return (Number) obj;
+    public boolean acceptsValue(Object value) {
+        return value instanceof Number;
     }
 }

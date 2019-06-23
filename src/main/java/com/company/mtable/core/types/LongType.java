@@ -7,11 +7,16 @@ public class LongType extends NumberType {
 
     @Override
     public String typeName() {
-        return type().getTypeName();
+        return typeClass().getTypeName();
     }
 
     @Override
-    public Class<Long> type() {
+    public Class<Long> typeClass() {
         return Long.TYPE;
+    }
+
+    @Override
+    public Object value(Object value) {
+        return ((Number)value).longValue();
     }
 }

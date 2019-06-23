@@ -5,5 +5,11 @@ public interface DataType {
 
     String typeName();
 
-    Class<?> type();
+    Class<?> typeClass();
+
+    boolean acceptsType(DataType type);
+
+    Object value(Object value);
+
+    boolean acceptsValue(Object value);
 }

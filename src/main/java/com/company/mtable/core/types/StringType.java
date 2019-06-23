@@ -10,7 +10,22 @@ public class StringType implements DataType {
     }
 
     @Override
-    public Class<?> type() {
+    public Class<?> typeClass() {
         return String.class;
+    }
+
+    @Override
+    public boolean acceptsType(DataType type) {
+        return true;
+    }
+
+    @Override
+    public Object value(Object value) {
+        return String.valueOf(value);
+    }
+
+    @Override
+    public boolean acceptsValue(Object value) {
+        return true;
     }
 }

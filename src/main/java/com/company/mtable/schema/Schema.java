@@ -70,11 +70,11 @@ public class Schema {
         return columnNameMap.get(name).getCid();
     }
 
-    public Column getColumn(int cid) {
+    public Column column(int cid) {
         return columnIdMap.get(cid);
     }
 
-    public Column getColumn(String cname) {
+    public Column column(String cname) {
         return columnNameMap.get(cname);
     }
 

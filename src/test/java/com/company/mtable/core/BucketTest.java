@@ -44,12 +44,12 @@ public class BucketTest {
             for (int i = 1; i < 11; i++) {
                 Record record = Record.newRecord(schema);
 
-                record.set(schema.cid("poi_id"), i);
-                record.set(schema.cid("product_id"), i);
-                record.set(schema.cid("customer_id"), i);
-                record.set(schema.cid("date"), i);
-                record.set(schema.cid("trade_type"), i);
-                record.set(schema.cid("selling_price"), i);
+                record.set(schema.column("poi_id"), i);
+                record.set(schema.column("product_id"), i);
+                record.set(schema.column("customer_id"), i);
+                record.set(schema.column("date"), i);
+                record.set(schema.column("trade_type"), i);
+                record.set(schema.column("selling_price"), i);
 
                 bucket.put(schema, record);
 
@@ -70,12 +70,12 @@ public class BucketTest {
         for (int i = 1; i < 11; i++) {
             Record record = Record.newRecord(schema);
 
-            record.set(schema.cid("poi_id"), i);
-            record.set(schema.cid("product_id"), i);
-            record.set(schema.cid("customer_id"), i * 203);
-            record.set(schema.cid("date"), i%2);
-            record.set(schema.cid("trade_type"), i);
-            record.set(schema.cid("selling_price"), i);
+            record.set(schema.column("poi_id"), i);
+            record.set(schema.column("product_id"), i);
+            record.set(schema.column("customer_id"), i * 203);
+            record.set(schema.column("date"), i%2);
+            record.set(schema.column("trade_type"), i);
+            record.set(schema.column("selling_price"), i);
 
             bucket.put(schema, record);
         }
@@ -249,45 +249,45 @@ public class BucketTest {
 
         for (int i = 0; i < 10; i++) {
             record = Record.newRecord(schema);
-            record.set(schema.cid("poi_id"), 100100);
-            record.set(schema.cid("product_id"), 300100);
-            record.set(schema.cid("customer_id"), 33);
-            record.set(schema.cid("date"), 20190523+i);
-            record.set(schema.cid("trade_type"), 1);
-            record.set(schema.cid("selling_price"), 228+i*10);
+            record.set(schema.column("poi_id"), 100100);
+            record.set(schema.column("product_id"), 300100);
+            record.set(schema.column("customer_id"), 33);
+            record.set(schema.column("date"), 20190523+i);
+            record.set(schema.column("trade_type"), 1);
+            record.set(schema.column("selling_price"), 228+i*10);
             bucket.put(schema, record);
         }
 
         for (int i = 0; i < 10; i++) {
             record = Record.newRecord(schema);
-            record.set(schema.cid("poi_id"), 100100);
-            record.set(schema.cid("product_id"), 300200);
-            record.set(schema.cid("customer_id"), 33);
-            record.set(schema.cid("date"), 20190523+i);
-            record.set(schema.cid("trade_type"), 1);
-            record.set(schema.cid("selling_price"), 78+i*10);
+            record.set(schema.column("poi_id"), 100100);
+            record.set(schema.column("product_id"), 300200);
+            record.set(schema.column("customer_id"), 33);
+            record.set(schema.column("date"), 20190523+i);
+            record.set(schema.column("trade_type"), 1);
+            record.set(schema.column("selling_price"), 78+i*10);
             bucket.put(schema, record);
         }
 
         for (int i = 0; i < 10; i++) {
             record = Record.newRecord(schema);
-            record.set(schema.cid("poi_id"), 100100);
-            record.set(schema.cid("product_id"), 300300);
-            record.set(schema.cid("customer_id"), 33);
-            record.set(schema.cid("date"), 20190523+i);
-            record.set(schema.cid("trade_type"), 1);
-            record.set(schema.cid("selling_price"), 58+i*10);
+            record.set(schema.column("poi_id"), 100100);
+            record.set(schema.column("product_id"), 300300);
+            record.set(schema.column("customer_id"), 33);
+            record.set(schema.column("date"), 20190523+i);
+            record.set(schema.column("trade_type"), 1);
+            record.set(schema.column("selling_price"), 58+i*10);
             bucket.put(schema, record);
         }
 
         for (int i = 0; i < 5; i++) {
             record = Record.newRecord(schema);
-            record.set(schema.cid("poi_id"), 100100);
-            record.set(schema.cid("product_id"), 300400);
-            record.set(schema.cid("customer_id"), 33);
-            record.set(schema.cid("date"), 20190526+i);
-            record.set(schema.cid("trade_type"), 2);
-            record.set(schema.cid("selling_price"), 138+i*10);
+            record.set(schema.column("poi_id"), 100100);
+            record.set(schema.column("product_id"), 300400);
+            record.set(schema.column("customer_id"), 33);
+            record.set(schema.column("date"), 20190526+i);
+            record.set(schema.column("trade_type"), 2);
+            record.set(schema.column("selling_price"), 138+i*10);
             bucket.put(schema, record);
         }
         return bucket;
@@ -300,8 +300,8 @@ public class BucketTest {
         SkipListBucket bucket = mkBucketRealData();
         bucket.printTable(schema);
 
-        Column groupCol = schema.getColumn(1);
-        Column price_col = schema.getColumn(5);
+        Column groupCol = schema.column(1);
+        Column price_col = schema.column(5);
 
         List<Column> groupBy = Arrays.asList(groupCol);
         scanner.setGroupBy(groupBy);
@@ -313,7 +313,7 @@ public class BucketTest {
         scanner.addProjection(Max, Collections.singletonList(price_col), "max_price");
         scanner.addProjection(Min, Collections.singletonList(price_col), "min_price");
 
-        int dateCid = schema.cid("date");
+        int dateCid = schema.column("date");
         bucket.scan(schema, Arrays.asList(
                 new Filter(dateCid, OpType.GT, 20190525),
                 new Filter(dateCid, OpType.LT, 20190530)

@@ -10,7 +10,22 @@ public class AnyType implements DataType {
     }
 
     @Override
-    public Class<?> type() {
+    public Class<?> typeClass() {
         return Object.class;
+    }
+
+    @Override
+    public boolean acceptsType(DataType type) {
+        return true;
+    }
+
+    @Override
+    public Object value(Object value) {
+        return value;
+    }
+
+    @Override
+    public boolean acceptsValue(Object value) {
+        return true;
     }
 }

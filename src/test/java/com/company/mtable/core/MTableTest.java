@@ -1,6 +1,5 @@
 package com.company.mtable.core;
 
-import com.company.mtable.core.datatypes.Tuple2;
 import com.company.mtable.schema.Column;
 import com.company.mtable.schema.Schema;
 import org.junit.Before;
@@ -12,7 +11,6 @@ import java.util.List;
 
 import static com.company.mtable.core.types.Types.ByteType;
 import static com.company.mtable.core.types.Types.IntegerType;
-import static com.company.mtable.core.types.Types.TupleType;
 import static org.junit.Assert.*;
 
 /**
@@ -48,12 +46,12 @@ public class MTableTest {
             for (int i = 1; i < 11; i++) {
                 Record record = Record.newRecord(schema);
 
-                record.set(schema.cid("poi_id"), i);
-                record.set(schema.cid("product_id"), i);
-                record.set(schema.cid("customer_id"), i);
-                record.set(schema.cid("date"), i);
-                record.set(schema.cid("trade_type"), i);
-                record.set(schema.cid("selling_price"), i);
+                record.set(schema.column("poi_id"), i);
+                record.set(schema.column("product_id"), i);
+                record.set(schema.column("customer_id"), i);
+                record.set(schema.column("date"), i);
+                record.set(schema.column("trade_type"), i);
+                record.set(schema.column("selling_price"), i);
 
                 mtable.put(record);
 
@@ -93,45 +91,45 @@ public class MTableTest {
 
         for (int i = 0; i < 10; i++) {
             record = Record.newRecord(schema);
-            record.set(schema.cid("poi_id"), 100100);
-            record.set(schema.cid("product_id"), 300100);
-            record.set(schema.cid("customer_id"), 33);
-            record.set(schema.cid("date"), 20190523+i);
-            record.set(schema.cid("trade_type"), 1);
-            record.set(schema.cid("selling_price"), 228+i*10);
+            record.set(schema.column("poi_id"), 100100);
+            record.set(schema.column("product_id"), 300100);
+            record.set(schema.column("customer_id"), 33);
+            record.set(schema.column("date"), 20190523+i);
+            record.set(schema.column("trade_type"), 1);
+            record.set(schema.column("selling_price"), 228+i*10);
             table.put(record);
         }
 
         for (int i = 0; i < 10; i++) {
             record = Record.newRecord(schema);
-            record.set(schema.cid("poi_id"), 100100);
-            record.set(schema.cid("product_id"), 300200);
-            record.set(schema.cid("customer_id"), 33);
-            record.set(schema.cid("date"), 20190523+i);
-            record.set(schema.cid("trade_type"), 1);
-            record.set(schema.cid("selling_price"), 78+i*10);
+            record.set(schema.column("poi_id"), 100100);
+            record.set(schema.column("product_id"), 300200);
+            record.set(schema.column("customer_id"), 33);
+            record.set(schema.column("date"), 20190523+i);
+            record.set(schema.column("trade_type"), 1);
+            record.set(schema.column("selling_price"), 78+i*10);
             table.put(record);
         }
 
         for (int i = 0; i < 10; i++) {
             record = Record.newRecord(schema);
-            record.set(schema.cid("poi_id"), 100100);
-            record.set(schema.cid("product_id"), 300300);
-            record.set(schema.cid("customer_id"), 33);
-            record.set(schema.cid("date"), 20190523+i);
-            record.set(schema.cid("trade_type"), 1);
-            record.set(schema.cid("selling_price"), 58+i*10);
+            record.set(schema.column("poi_id"), 100100);
+            record.set(schema.column("product_id"), 300300);
+            record.set(schema.column("customer_id"), 33);
+            record.set(schema.column("date"), 20190523+i);
+            record.set(schema.column("trade_type"), 1);
+            record.set(schema.column("selling_price"), 58+i*10);
             table.put(record);
         }
 
         for (int i = 0; i < 5; i++) {
             record = Record.newRecord(schema);
-            record.set(schema.cid("poi_id"), 100100);
-            record.set(schema.cid("product_id"), 300400);
-            record.set(schema.cid("customer_id"), 33);
-            record.set(schema.cid("date"), 20190526+i);
-            record.set(schema.cid("trade_type"), 2);
-            record.set(schema.cid("selling_price"), 138+i*10);
+            record.set(schema.column("poi_id"), 100100);
+            record.set(schema.column("product_id"), 300400L);
+            record.set(schema.column("customer_id"), 33);
+            record.set(schema.column("date"), 20190526+i);
+            record.set(schema.column("trade_type"), 2);
+            record.set(schema.column("selling_price"), 138+i*10);
             table.put(record);
         }
         return table;
@@ -144,8 +142,8 @@ public class MTableTest {
         MTable table = mkTableRealData();
         table.printTable();
 
-        Column groupCol = schema.getColumn(1);
-        Column price_col = schema.getColumn(5);
+        Column groupCol = schema.column(1);
+        Column price_col = schema.column(5);
 
         List<Column> groupBy = Arrays.asList(groupCol);
         querier.setGroupBy(groupBy);
@@ -187,8 +185,8 @@ public class MTableTest {
         MTable table = mkTableRealData();
         table.printTable();
 
-        Column tradeTypeCol = schema.getColumn(4);
-        Column dateCol = schema.getColumn(3);
+        Column tradeTypeCol = schema.column(4);
+        Column dateCol = schema.column(3);
 
         querier.addSelection(new Projection(tradeTypeCol, null));
         querier.addSelection(new Projection(dateCol, null));
@@ -205,72 +203,6 @@ public class MTableTest {
         List<ResultRow> resultRows = querier.getResultSet().resultRows();
 
         ResultRow resultRow = resultRows.get(0);
-//        assertEquals(resultRow.get(5), 258);
-
-        querier.getResultSet().printTable();
-    }
-
-    private static Schema newTupleSchema() {
-        Schema schema = new Schema("product_info");
-
-        schema.addColumn("poi_id", IntegerType);
-        schema.addColumn("product_id", IntegerType);
-        schema.addColumn("customer_id", IntegerType);
-        schema.addColumn("date", IntegerType);
-        schema.addColumn("types", TupleType);
-        schema.addColumn("selling_price", IntegerType);
-
-        schema.setPartitionKey("poi_id");
-        schema.setUniqueIndexKeys(Arrays.asList("poi_id", "date", "product_id"));
-        return schema;
-    }
-
-    private MTable mkTupleTable() {
-        MTable table = new MTable(schema);
-
-        Record record;
-
-        for (int i = 0; i < 10; i++) {
-            record = Record.newRecord(schema);
-            record.set(schema.cid("poi_id"), 100100);
-            record.set(schema.cid("product_id"), 300100);
-            record.set(schema.cid("customer_id"), 33);
-            record.set(schema.cid("date"), 20190523+i);
-            record.set(schema.cid("types"), new Tuple2(1,2));
-            record.set(schema.cid("selling_price"), 228+i*10);
-            table.put(record);
-        }
-        return table;
-    }
-
-    @Test
-    public void scanAggregateScannerTulple() throws Exception {
-        Querier querier = new Querier();
-
-        schema = newTupleSchema();
-
-        MTable table = mkTupleTable();
-        table.printTable();
-
-        Column tradeTypeCol = schema.getColumn(4);
-        Column dateCol = schema.getColumn(3);
-
-        querier.addSelection(new FunctionCall(FunctionRegistry.get("tuple_add"), Collections.singletonList(tradeTypeCol), null));
-        querier.addSelection(new Projection(dateCol, null));
-
-        int dateCid = schema.cid("date");
-        table.scan(Arrays.asList(
-                new Filter(schema.getPartitionColumn().getCid(), OpType.EQ, 100100),
-                new Filter(dateCid, OpType.GT, 20190525),
-                new Filter(dateCid, OpType.LT, 20190530)
-        ), querier);
-
-        querier.getResultSet().columns().forEach(c -> System.out.println(c.getType()));
-
-        List<ResultRow> resultRows = querier.getResultSet().resultRows();
-
-        ResultRow resultRow = resultRows.get(0);
-//        assertEquals(resultRow.get(5), 258);
 
         querier.getResultSet().printTable();
     }

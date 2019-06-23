@@ -6,11 +6,16 @@ package com.company.mtable.core.types;
 public class ShortType extends NumberType {
     @Override
     public String typeName() {
-        return type().getTypeName();
+        return typeClass().getTypeName();
     }
 
     @Override
-    public Class<?> type() {
+    public Class<?> typeClass() {
         return Short.TYPE;
+    }
+
+    @Override
+    public Object value(Object value) {
+        return ((Number)value).shortValue();
     }
 }

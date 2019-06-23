@@ -6,11 +6,16 @@ package com.company.mtable.core.types;
 public class ByteType extends NumberType {
     @Override
     public String typeName() {
-        return type().getTypeName();
+        return typeClass().getTypeName();
     }
 
     @Override
-    public Class<Byte> type() {
+    public Class<Byte> typeClass() {
         return Byte.TYPE;
+    }
+
+    @Override
+    public Object value(Object value) {
+        return ((Number)value).byteValue();
     }
 }
