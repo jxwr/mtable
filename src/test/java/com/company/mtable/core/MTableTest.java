@@ -1,8 +1,8 @@
 package com.company.mtable.core;
 
+import com.company.mtable.core.datatypes.Tuple2;
 import com.company.mtable.schema.Column;
 import com.company.mtable.schema.Schema;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -10,8 +10,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.company.mtable.core.funcs.Funcs.*;
+import static com.company.mtable.core.types.Types.ByteType;
 import static com.company.mtable.core.types.Types.IntegerType;
+import static com.company.mtable.core.types.Types.TupleType;
 import static org.junit.Assert.*;
 
 /**
@@ -32,7 +33,7 @@ public class MTableTest {
         schema.addColumn("product_id", IntegerType);
         schema.addColumn("customer_id", IntegerType);
         schema.addColumn("date", IntegerType);
-        schema.addColumn("trade_type", IntegerType);
+        schema.addColumn("trade_type", ByteType);
         schema.addColumn("selling_price", IntegerType);
 
         schema.setPartitionKey("poi_id");
@@ -138,7 +139,7 @@ public class MTableTest {
 
     @Test
     public void scanAggregateScannerByGroup() throws Exception {
-        AggregateScanner scanner = new AggregateScanner();
+        Querier querier = new Querier();
 
         MTable table = mkTableRealData();
         table.printTable();
@@ -147,23 +148,26 @@ public class MTableTest {
         Column price_col = schema.getColumn(5);
 
         List<Column> groupBy = Arrays.asList(groupCol);
-        scanner.setGroupBy(groupBy);
+        querier.setGroupBy(groupBy);
 
-        scanner.addProjection(groupCol);
-        scanner.addProjection(Count, Collections.singletonList(price_col), "count_price");
-        scanner.addProjection(Avg, Collections.singletonList(price_col), "avg_price");
-        scanner.addProjection(Sum, Collections.singletonList(price_col), "sum_price");
-        scanner.addProjection(Max, Collections.singletonList(price_col), "max_price");
-        scanner.addProjection(Min, Collections.singletonList(price_col), "min_price");
+        querier.addSelection(new Projection(groupCol, null));
+
+        querier.addSelection(new FunctionCall(FunctionRegistry.get("count"), Collections.singletonList(price_col), null));
+        querier.addSelection(new FunctionCall(FunctionRegistry.get("avg"), Collections.singletonList(price_col), null));
+        querier.addSelection(new FunctionCall(FunctionRegistry.get("sum"), Collections.singletonList(price_col), "sum_price"));
+        querier.addSelection(new FunctionCall(FunctionRegistry.get("max"), Collections.singletonList(price_col), null));
+        querier.addSelection(new FunctionCall(FunctionRegistry.get("min"), Collections.singletonList(price_col), null));
 
         int dateCid = schema.cid("date");
         table.scan(Arrays.asList(
                 new Filter(schema.getPartitionColumn().getCid(), OpType.EQ, 100100),
                 new Filter(dateCid, OpType.GT, 20190525),
                 new Filter(dateCid, OpType.LT, 20190530)
-        ), scanner);
+        ), querier);
 
-        List<ResultRow> resultRows = scanner.getResultSet().resultRows();
+        querier.getResultSet().columns().forEach(c -> System.out.println(c.getType()));
+
+        List<ResultRow> resultRows = querier.getResultSet().resultRows();
 
         ResultRow resultRow = resultRows.get(0);
         assertEquals(resultRow.get(0), 300100);
@@ -173,6 +177,101 @@ public class MTableTest {
         assertEquals(resultRow.get(4), 288);
         assertEquals(resultRow.get(5), 258);
 
-        scanner.getResultSet().printTable();
+        querier.getResultSet().printTable();
+    }
+
+    @Test
+    public void scanAggregateScannerType0() throws Exception {
+        Querier querier = new Querier();
+
+        MTable table = mkTableRealData();
+        table.printTable();
+
+        Column tradeTypeCol = schema.getColumn(4);
+        Column dateCol = schema.getColumn(3);
+
+        querier.addSelection(new Projection(tradeTypeCol, null));
+        querier.addSelection(new Projection(dateCol, null));
+
+        int dateCid = schema.cid("date");
+        table.scan(Arrays.asList(
+                new Filter(schema.getPartitionColumn().getCid(), OpType.EQ, 100100),
+                new Filter(dateCid, OpType.GT, 20190525),
+                new Filter(dateCid, OpType.LT, 20190530)
+        ), querier);
+
+        querier.getResultSet().columns().forEach(c -> System.out.println(c.getType()));
+
+        List<ResultRow> resultRows = querier.getResultSet().resultRows();
+
+        ResultRow resultRow = resultRows.get(0);
+//        assertEquals(resultRow.get(5), 258);
+
+        querier.getResultSet().printTable();
+    }
+
+    private static Schema newTupleSchema() {
+        Schema schema = new Schema("product_info");
+
+        schema.addColumn("poi_id", IntegerType);
+        schema.addColumn("product_id", IntegerType);
+        schema.addColumn("customer_id", IntegerType);
+        schema.addColumn("date", IntegerType);
+        schema.addColumn("types", TupleType);
+        schema.addColumn("selling_price", IntegerType);
+
+        schema.setPartitionKey("poi_id");
+        schema.setUniqueIndexKeys(Arrays.asList("poi_id", "date", "product_id"));
+        return schema;
+    }
+
+    private MTable mkTupleTable() {
+        MTable table = new MTable(schema);
+
+        Record record;
+
+        for (int i = 0; i < 10; i++) {
+            record = Record.newRecord(schema);
+            record.set(schema.cid("poi_id"), 100100);
+            record.set(schema.cid("product_id"), 300100);
+            record.set(schema.cid("customer_id"), 33);
+            record.set(schema.cid("date"), 20190523+i);
+            record.set(schema.cid("types"), new Tuple2(1,2));
+            record.set(schema.cid("selling_price"), 228+i*10);
+            table.put(record);
+        }
+        return table;
+    }
+
+    @Test
+    public void scanAggregateScannerTulple() throws Exception {
+        Querier querier = new Querier();
+
+        schema = newTupleSchema();
+
+        MTable table = mkTupleTable();
+        table.printTable();
+
+        Column tradeTypeCol = schema.getColumn(4);
+        Column dateCol = schema.getColumn(3);
+
+        querier.addSelection(new FunctionCall(FunctionRegistry.get("tuple_add"), Collections.singletonList(tradeTypeCol), null));
+        querier.addSelection(new Projection(dateCol, null));
+
+        int dateCid = schema.cid("date");
+        table.scan(Arrays.asList(
+                new Filter(schema.getPartitionColumn().getCid(), OpType.EQ, 100100),
+                new Filter(dateCid, OpType.GT, 20190525),
+                new Filter(dateCid, OpType.LT, 20190530)
+        ), querier);
+
+        querier.getResultSet().columns().forEach(c -> System.out.println(c.getType()));
+
+        List<ResultRow> resultRows = querier.getResultSet().resultRows();
+
+        ResultRow resultRow = resultRows.get(0);
+//        assertEquals(resultRow.get(5), 258);
+
+        querier.getResultSet().printTable();
     }
 }

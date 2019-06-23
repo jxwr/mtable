@@ -1,39 +1,53 @@
 package com.company.mtable.core;
 
+import com.company.mtable.core.types.DataType;
 import com.company.mtable.schema.Column;
-import com.company.mtable.schema.Schema;
-
-import java.util.List;
 
 /**
- * Created by jxwr on 2019/6/19.
+ * Created by jxwr on 2019/6/23.
  */
-public class Projection {
-
+public class Projection implements Selection {
+    private Column col;
     private String as;
 
-    private List<Column> cols;
-
-    private Func func;
-
-    private boolean stop = false;
-
-    public void init(Schema schema) {
+    public Projection(Column col, String as) {
+        this.col = col;
+        this.as = as;
     }
 
-    public boolean shouldStop() {
-        return this.stop;
+    @Override
+    public String name() {
+        return as == null ? col.getName() : as;
     }
 
-    public boolean handle(Schema schema, Record record) {
-        return true;
+    @Override
+    public DataType dataType() {
+        return col.getType();
     }
 
-    public void setStop(boolean stop) {
-        this.stop = stop;
+    @Override
+    public SelectionHandler getHandler(boolean aggregateQuery) {
+        return new Handler(col.getCid());
     }
 
-    public Object finish(Schema schema) {
-        return 0;
+    private class Handler implements SelectionHandler {
+        private int cid;
+        private Record currentRecord = null;
+
+        Handler(int cid) {
+            this.cid = cid;
+        }
+
+        @Override
+        public Object handle(Record record) {
+            if (this.currentRecord == null)
+                this.currentRecord = record;
+            return record.get(cid);
+        }
+
+        @Override
+        public Object finish() {
+            return currentRecord.get(cid);
+        }
     }
 }

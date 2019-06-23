@@ -140,7 +140,7 @@ public class SkipListBucket implements Bucket {
     }
 
     @Override
-    public void scan(Schema schema, List<Filter> filters, Scanner scanner) {
+    public void scan(Schema schema, List<Filter> filters, Scanner scanner) throws Exception {
         IndexValue lower = Filters.getLowestPrefix(schema, filters);
         IndexValue upper = Filters.getUpperPrefix(schema, filters);
 
@@ -220,7 +220,11 @@ public class SkipListBucket implements Bucket {
     public void printTable(Schema schema, List<Filter> filters, boolean hideHeader) {
         TablePrinter tablePrinter = new TablePrinter();
         tablePrinter.setHideHeader(hideHeader);
-        scan(schema, filters, tablePrinter);
+        try {
+            scan(schema, filters, tablePrinter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void printIndexValues(ConcurrentNavigableMap<IndexValue, Record> slice) {

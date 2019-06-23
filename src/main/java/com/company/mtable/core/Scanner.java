@@ -6,7 +6,7 @@ public interface Scanner {
 
     void init(Schema schema);
 
-    boolean handle(Schema schema, Record record);
+    boolean handle(Schema schema, Record record) throws Exception;
 
-    void finish(Schema schema);
+    void finish(Schema schema) throws Exception;
 }

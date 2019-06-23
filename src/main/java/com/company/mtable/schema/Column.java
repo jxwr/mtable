@@ -39,4 +39,9 @@ public class Column {
     private String name;
 
     private DataType type;
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

@@ -19,7 +19,7 @@ public interface Bucket {
 
     int update(Schema schema, List<Filter> filters, List<ColValue> values);
 
-    void scan(Schema schema, List<Filter> filters, Scanner scanner);
+    void scan(Schema schema, List<Filter> filters, Scanner scanner) throws Exception;
 
     List<Record> scan(Schema schema, List<Filter> filters);
 

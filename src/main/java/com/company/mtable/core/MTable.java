@@ -75,7 +75,7 @@ public class MTable {
         return bucket.scan(schema, filters);
     }
 
-    public void scan(List<Filter> filters, Scanner scanner) {
+    public void scan(List<Filter> filters, Scanner scanner) throws Exception {
         short bid = getBucketId(filters);
 
         Bucket bucket = buckets.get(bid);

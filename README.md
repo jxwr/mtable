@@ -1,10 +1,8 @@
-test memdb
-
 ##### TODO
 * projection ✔
 * aggregate, groupby ✔
 * mtable api ✔
-* 类型处理有问题
+* 类型，类型问题主要解决类型安全
 * datatype, list map tuple date
 * udf / udaf
 * bucket支持一个range, 避免太多map ✔
