@@ -22,6 +22,8 @@ public class Querier implements Scanner {
 
     private Map<IndexValue, List<SelectionHandler>> handlersGroup;
 
+    private boolean isAggregateQuery;
+
     public void addSelection(Projection projection) {
         selections.add(projection);
     }
@@ -34,13 +36,6 @@ public class Querier implements Scanner {
         this.groupBy = groupBy;
     }
 
-    private boolean isAggregateQuery() {
-        if (groupBy != null)
-            return true;
-        else
-            return false;
-    }
-
     @Override
     public void init(Schema schema) {
         for (int i = 0; i < selections.size(); i++) {
@@ -49,15 +44,20 @@ public class Querier implements Scanner {
             resultSet.addColumns(new Column(i, selection.name(), selection.dataType()));
         }
         handlersGroup = new HashMap<>();
-    }
 
-    private List<SelectionHandler> initializeHandlers() {
-        List<SelectionHandler> handlers = new ArrayList<>();
-        for (Selection projection : selections) {
-            SelectionHandler handler = projection.getHandler(isAggregateQuery());
-            handlers.add(handler);
+        // TODO: more check
+        if (groupBy != null) {
+            isAggregateQuery = true;
+        } else {
+            for (Selection selection : selections) {
+                if (selection instanceof FunctionCall) {
+                    if (((FunctionCall) selection).isAggregateFunction()) {
+                        isAggregateQuery = true;
+                        break;
+                    }
+                }
+            }
         }
-        return handlers;
     }
 
     @Override
@@ -122,5 +122,19 @@ public class Querier implements Scanner {
             }
             return new IndexValue(values);
         }
+    }
+
+
+    private boolean isAggregateQuery() {
+        return isAggregateQuery;
+    }
+
+    private List<SelectionHandler> initializeHandlers() {
+        List<SelectionHandler> handlers = new ArrayList<>();
+        for (Selection projection : selections) {
+            SelectionHandler handler = projection.getHandler(isAggregateQuery());
+            handlers.add(handler);
+        }
+        return handlers;
     }
 }

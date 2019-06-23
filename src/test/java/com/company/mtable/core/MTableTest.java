@@ -236,4 +236,43 @@ public class MTableTest {
 
         querier.getResultSet().printTable();
     }
+
+    @Test
+    public void getUDAF() throws Exception {
+        FunctionRegistry.registerUDF("udf_min_sum", "AFn2",
+                "" +
+                        "int min1 = Integer.MAX_VALUE;\n" +
+                        "int min2 = Integer.MAX_VALUE;\n" +
+                        "public void handle(Object t1, Object t2) throws Exception {\n" +
+                        "    if (min1 > (Integer)t1) {min1 = (Integer)t1;}\n" +
+                        "    if (min2 > (Integer)t2) {min2 = (Integer)t2;}\n" +
+                        "}\n" +
+                        "public Object finish() throws Exception { \n" +
+                        "    return min1+min2;\n" +
+                        "}\n"
+        );
+
+        Querier querier = new Querier();
+
+        MTable table = mkTableRealData();
+        table.printTable();
+
+        Column tradeTypeCol = schema.column(4);
+        Column dateCol = schema.column(3);
+        Column cumstomerCol = schema.column(2);
+
+        // select trade_type, udf_add(date, 1000000000) where date > xx and date < xxx
+        querier.addSelection(new Projection(tradeTypeCol, null));
+        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("udf_min_sum"),
+                Arrays.asList(dateCol, cumstomerCol), null));
+
+        int dateCid = schema.cid("date");
+        table.scan(Arrays.asList(
+                new Filter(schema.getPartitionColumn().getCid(), OpType.EQ, 100100),
+                new Filter(dateCid, OpType.GT, 20190525),
+                new Filter(dateCid, OpType.LT, 20190530)
+        ), querier);
+
+        querier.getResultSet().printTable();
+    }
 }

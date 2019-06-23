@@ -47,6 +47,10 @@ public class FunctionCall implements Selection {
         }
     }
 
+    public boolean isAggregateFunction() {
+        return this.funcInfo.isAggregateFunction();
+    }
+
     @Override
     public String name() {
         return this.name;
