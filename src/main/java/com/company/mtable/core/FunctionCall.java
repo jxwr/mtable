@@ -3,9 +3,9 @@ package com.company.mtable.core;
 import com.company.mtable.core.fn.*;
 import com.company.mtable.core.types.DataType;
 import com.company.mtable.core.types.Types;
+import com.company.mtable.exception.ParameterTypeError;
 import com.company.mtable.schema.Column;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +21,15 @@ public class FunctionCall implements Selection {
 
     private String name;
 
-    public FunctionCall(FunctionInfo funcInfo, List<Object> params, String as) {
+    public static FunctionCall checkAndCreate(FunctionInfo funcInfo, List<Object> params, String as) throws ParameterTypeError {
+        String errorMsg = funcInfo.checkInputTypes(params);
+        if (errorMsg != null) {
+            throw new ParameterTypeError(errorMsg);
+        }
+        return new FunctionCall(funcInfo, params, as);
+    }
+
+    private FunctionCall(FunctionInfo funcInfo, List<Object> params, String as) {
         this.funcInfo = funcInfo;
         this.params = params;
 
@@ -66,23 +74,29 @@ public class FunctionCall implements Selection {
     @Override
     public SelectionHandler getHandler(boolean aggregateQuery) {
         List<Integer> idxs = new ArrayList<>();
-        List<Integer> cids = new ArrayList<>();
+        List<Column> cols = new ArrayList<>();
         Object[] paramValues = new Object[params.size()];
 
         for (int i = 0; i < params.size(); i++) {
             Object obj = params.get(i);
             if (obj instanceof Column) {
                 idxs.add(i);
-                cids.add(((Column) obj).getCid());
+                cols.add((Column) obj);
             } else {
-                paramValues[i] = obj;
+                //System.out.println(funcInfo.name() + " => " + funcInfo.inputTypes());
+                System.out.println("" + i + ": " +
+                        funcInfo.name() + " =>> " +
+                        funcInfo.inputTypes().get(i) + " ==>> " +
+                        funcInfo.inputTypes().get(i).value(obj)
+                );
+                paramValues[i] = funcInfo.inputTypes().get(i).value(obj);
             }
         }
 
         if (aggregateQuery) {
-            return new AggregateFunctionHandler(funcInfo.func(), paramValues, idxs, cids);
+            return new AggregateFunctionHandler(funcInfo.func(), paramValues, idxs, cols);
         } else {
-            return new SimpleFunctionHandler(funcInfo.func(), paramValues, idxs, cids);
+            return new SimpleFunctionHandler(funcInfo.func(), paramValues, idxs, cols);
         }
     }
 
@@ -92,14 +106,14 @@ public class FunctionCall implements Selection {
 
         private List<Integer> idxs;
 
-        private List<Integer> cids;
+        private List<Column> cols;
 
         private Object func;
 
-        public SimpleFunctionHandler(Object func, Object[] params, List<Integer> idxs, List<Integer> cids) {
+        public SimpleFunctionHandler(Object func, Object[] params, List<Integer> idxs, List<Column> cols) {
             this.func = func;
             this.params = params;
-            this.cids = cids;
+            this.cols = cols;
             this.idxs = idxs;
         }
 
@@ -107,7 +121,8 @@ public class FunctionCall implements Selection {
         @SuppressWarnings("unchecked")
         public Object handle(Record record) throws Exception {
             for (Integer i : idxs) {
-                params[i] = record.get(cids.get(i));
+                Column col = cols.get(i);
+                params[i] = record.get(col);
             }
 
             switch (params.length) {
@@ -133,14 +148,14 @@ public class FunctionCall implements Selection {
 
         private List<Integer> idxs;
 
-        private List<Integer> cids;
+        private List<Column> cols;
 
         private Object func;
 
-        public AggregateFunctionHandler(Object func, Object[] params, List<Integer> idxs, List<Integer> cids) {
+        public AggregateFunctionHandler(Object func, Object[] params, List<Integer> idxs, List<Column> cols) {
             this.func = func;
             this.params = params;
-            this.cids = cids;
+            this.cols = cols;
             this.idxs = idxs;
         }
 
@@ -148,7 +163,8 @@ public class FunctionCall implements Selection {
         @SuppressWarnings("unchecked")
         public Object handle(Record record) throws Exception {
             for (Integer i : idxs) {
-                params[i] = record.get(cids.get(i));
+                Column col = cols.get(i);
+                params[i] = record.get(col);
             }
             switch (params.length) {
                 case 0: ((AFn0)func).handle(); break;

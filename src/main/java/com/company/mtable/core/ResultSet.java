@@ -1,5 +1,6 @@
 package com.company.mtable.core;
 
+import com.company.mtable.core.types.Types;
 import com.company.mtable.schema.Column;
 import com.company.mtable.schema.Schema;
 
@@ -40,11 +41,12 @@ public class ResultSet {
     private boolean firstline = true;
 
     private int minRowLen(Column c) {
-        int len = (c.getName().length()+2);
+        int len = (c.getName().length()+3);
         return len < 10 ? 10 : len;
     }
 
     public void printTable() {
+        System.out.println("Results:");
         for (ResultRow row : resultRows()) {
             printRow(row);
         }
@@ -59,7 +61,7 @@ public class ResultSet {
             printline(cs, '-');
 
             for (Column c : cs) {
-                System.out.printf("%" + minRowLen(c) + "s|", c.getName());
+                System.out.printf("%" + minRowLen(c) + "s|", c.getName() + '[' + Types.typeChar(c.getType()));
             }
             println();
 

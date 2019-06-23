@@ -23,6 +23,8 @@ public interface Types {
 
     DataType DateType = new DateType();
 
+    DataType NumberType = new NumberType();
+
     DataType AnyType = new AnyType();
 
     static DataType fromClass(Class klass) {
@@ -34,11 +36,34 @@ public interface Types {
             return ShortType;
         } else if (klass.equals(Byte.class)) {
             return ByteType;
+        } else if (klass.equals(Number.class)) {
+            return NumberType;
         } else if (klass.equals(String.class)) {
             return StringType;
         } else if (klass.equals(Date.class)) {
             return DateType;
         }
         return AnyType;
+    }
+
+    static char typeChar(DataType dataType) {
+        if (dataType == Types.IntegerType) {
+            return 'I';
+        } else if (dataType == Types.BooleanType) {
+            return 'B';
+        } else if (dataType == Types.LongType) {
+            return 'L';
+        } else if (dataType == Types.ByteType) {
+            return 'b';
+        } else if (dataType == Types.NumberType) {
+            return 'N';
+        } else if (dataType == Types.StringType) {
+            return 'S';
+        } else if (dataType == Types.DateType) {
+            return 'D';
+        } else if (dataType == Types.AnyType) {
+            return 'A';
+        }
+        return 'E';
     }
 }

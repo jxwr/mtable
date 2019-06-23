@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * Created by jxwr on 2019/6/19.
  */
-public class DateType implements DataType {
+public class DateType extends AbstractDataType {
     @Override
     public String typeName() {
         return "Date";

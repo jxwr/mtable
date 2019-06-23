@@ -53,4 +53,8 @@ public class Record {
     }
 
     private Object[] values;
+
+    public Object get(Column col) {
+        return col.getType().value(values[col.getCid()]);
+    }
 }

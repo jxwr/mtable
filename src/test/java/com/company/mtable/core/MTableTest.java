@@ -11,6 +11,7 @@ import java.util.List;
 
 import static com.company.mtable.core.types.Types.ByteType;
 import static com.company.mtable.core.types.Types.IntegerType;
+import static com.company.mtable.core.types.Types.StringType;
 import static org.junit.Assert.*;
 
 /**
@@ -33,6 +34,7 @@ public class MTableTest {
         schema.addColumn("date", IntegerType);
         schema.addColumn("trade_type", ByteType);
         schema.addColumn("selling_price", IntegerType);
+        schema.addColumn("product_name", StringType);
 
         schema.setPartitionKey("poi_id");
         schema.setUniqueIndexKeys(Arrays.asList("poi_id", "date", "product_id"));
@@ -52,6 +54,7 @@ public class MTableTest {
                 record.set(schema.column("date"), i);
                 record.set(schema.column("trade_type"), i);
                 record.set(schema.column("selling_price"), i);
+                record.set(schema.column("product_name"), "pname" + i);
 
                 mtable.put(record);
 
@@ -150,11 +153,11 @@ public class MTableTest {
 
         querier.addSelection(new Projection(groupCol, null));
 
-        querier.addSelection(new FunctionCall(FunctionRegistry.get("count"), Collections.singletonList(price_col), null));
-        querier.addSelection(new FunctionCall(FunctionRegistry.get("avg"), Collections.singletonList(price_col), null));
-        querier.addSelection(new FunctionCall(FunctionRegistry.get("sum"), Collections.singletonList(price_col), "sum_price"));
-        querier.addSelection(new FunctionCall(FunctionRegistry.get("max"), Collections.singletonList(price_col), null));
-        querier.addSelection(new FunctionCall(FunctionRegistry.get("min"), Collections.singletonList(price_col), null));
+        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("count"), Collections.singletonList(price_col), null));
+        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("avg"), Collections.singletonList(price_col), null));
+        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("sum"), Collections.singletonList(price_col), "sum_price"));
+        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("max"), Collections.singletonList(price_col), null));
+        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("min"), Collections.singletonList(price_col), null));
 
         int dateCid = schema.cid("date");
         table.scan(Arrays.asList(
@@ -197,8 +200,6 @@ public class MTableTest {
                 new Filter(dateCid, OpType.GT, 20190525),
                 new Filter(dateCid, OpType.LT, 20190530)
         ), querier);
-
-        querier.getResultSet().columns().forEach(c -> System.out.println(c.getType()));
 
         List<ResultRow> resultRows = querier.getResultSet().resultRows();
 

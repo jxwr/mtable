@@ -2,7 +2,8 @@
 * projection ✔
 * aggregate, groupby ✔
 * mtable api ✔
-* 类型校验和自动类型转换，入参、更新
+* 更新自动类型转换 ✔
+* 函数入参类型校验和自动转换 ✔  
 * datatype, list map tuple date
 * udf / udaf
 * bucket支持一个range, 避免太多map ✔

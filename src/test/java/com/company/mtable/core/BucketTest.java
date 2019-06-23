@@ -1,5 +1,6 @@
 package com.company.mtable.core;
 
+import com.company.mtable.schema.Column;
 import com.company.mtable.schema.Schema;
 import static com.company.mtable.core.types.Types.*;
 
@@ -7,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -176,48 +178,67 @@ public class BucketTest {
 
         bucket.printTable(schema);
     }
-/*
+
     @Test
     public void scanProjectionScanner1() throws Exception {
-        ProjectionScanner scanner = new ProjectionScanner();
+        Querier querier = new Querier();
 
         SkipListBucket bucket = mkBucket();
         bucket.printTable(schema);
 
         Column col = new Column(1, "product_id", IntegerType);
 
-        scanner.addProjection(col, "gid");
-        scanner.addProjection(Mul, Arrays.asList(
+        querier.addSelection(new Projection(col, "gid"));
+        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("mul"), Arrays.asList(
                 col,
-                2
-        ), "gid_mod");
+                1L
+        ), "gid_mod"));
 
-        bucket.scan(schema, Collections.emptyList(), scanner);
+        bucket.scan(schema, Collections.emptyList(), querier);
+        querier.getResultSet().printTable();
     }
 
     @Test
     public void scanProjectionScanner2() throws Exception {
-        ProjectionScanner scanner = new ProjectionScanner();
+        Querier querier = new Querier();
 
         SkipListBucket bucket = mkBucket();
         bucket.printTable(schema);
 
-        Column col = new Column(1, "product_id", IntegerType);
-        Column col2 = new Column(2, "customer_id", IntegerType);
+        Column col = schema.column("product_id");
 
-        scanner.addProjection(col);
-        scanner.addProjection(col2, "kid");
-        scanner.addProjection(Mul, Arrays.asList(col, 2L), "gid_mul");
-        scanner.addProjection(Mod, Arrays.asList(col, 3), "gid_mod_3");
+        querier.addSelection(new Projection(col, null));
+        querier.addSelection(new Projection(schema.column("customer_id"), "kid"));
+        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("mul"), Arrays.asList(col, 2L), "gid_mul"));
+        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("mod"), Arrays.asList(col, 3L), "gid_mod_3"));
 
-        bucket.scan(schema, Collections.emptyList(), scanner);
+        bucket.scan(schema, Collections.emptyList(), querier);
 
-        scanner.getResultSet().printTable();
+        querier.getResultSet().printTable();
+    }
+
+    @Test
+    public void testInputTypeCheck() throws Exception {
+        Querier querier = new Querier();
+
+        SkipListBucket bucket = mkBucket();
+        bucket.printTable(schema);
+
+        Column col = schema.column("product_id");
+
+        querier.addSelection(new Projection(col, null));
+        querier.addSelection(new Projection(schema.column("customer_id"), "kid"));
+        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("mul"), Arrays.asList(col, Byte.valueOf("10")), "gid_mul"));
+        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("mod"), Arrays.asList(col, Byte.valueOf("2")), "gid_mod"));
+
+        bucket.scan(schema, Collections.emptyList(), querier);
+
+        querier.getResultSet().printTable();
     }
 
     @Test
     public void scanAggregateScanner() throws Exception {
-        AggregateScanner scanner = new AggregateScanner();
+        Querier querier = new Querier();
 
         SkipListBucket bucket = mkBucket();
         bucket.printTable(schema);
@@ -225,21 +246,21 @@ public class BucketTest {
         Column col = new Column(1, "product_id", IntegerType);
         Column col2 = new Column(2, "customer_id", IntegerType);
 
-        scanner.addProjection(Sum, Collections.singletonList(col), "sum_pid");
-        scanner.addProjection(Count, Collections.singletonList(col2), "count_cid");
-        scanner.addProjection(Avg, Collections.singletonList(col2), "avg_cid");
-        scanner.addProjection(Sum, Collections.singletonList(col2), "sum_cid");
+        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("sum"), Collections.singletonList(col), "sum_pid"));
+        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("count"), Collections.singletonList(col2), "count_cid"));
+        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("avg"), Collections.singletonList(col2), "avg_cid"));
+        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("sum"), Collections.singletonList(col2), "sum_cid"));
 
-        bucket.scan(schema, Collections.emptyList(), scanner);
+        bucket.scan(schema, Collections.emptyList(), querier);
 
-        List<ResultRow> resultRows = scanner.getResultSet().resultRows();
+        List<ResultRow> resultRows = querier.getResultSet().resultRows();
         ResultRow resultRow = resultRows.get(0);
         assertEquals(resultRow.get(0), 55L);
         assertEquals(resultRow.get(1), 10);
         assertEquals(resultRow.get(2), 1116L);
         assertEquals(resultRow.get(3), 11165L);
 
-        scanner.getResultSet().printTable();
+        querier.getResultSet().printTable();
     }
 
     private SkipListBucket mkBucketRealData() {
@@ -295,7 +316,7 @@ public class BucketTest {
 
     @Test
     public void scanAggregateScannerByGroup() throws Exception {
-        AggregateScanner scanner = new AggregateScanner();
+        Querier querier = new Querier();
 
         SkipListBucket bucket = mkBucketRealData();
         bucket.printTable(schema);
@@ -304,22 +325,22 @@ public class BucketTest {
         Column price_col = schema.column(5);
 
         List<Column> groupBy = Arrays.asList(groupCol);
-        scanner.setGroupBy(groupBy);
+        querier.setGroupBy(groupBy);
 
-        scanner.addProjection(groupCol);
-        scanner.addProjection(Count, Collections.singletonList(price_col), "count_price");
-        scanner.addProjection(Avg, Collections.singletonList(price_col), "avg_price");
-        scanner.addProjection(Sum, Collections.singletonList(price_col), "sum_price");
-        scanner.addProjection(Max, Collections.singletonList(price_col), "max_price");
-        scanner.addProjection(Min, Collections.singletonList(price_col), "min_price");
+        querier.addSelection(new Projection(groupCol, null));
+        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("count"), Collections.singletonList(price_col), "count_price"));
+        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("avg"), Collections.singletonList(price_col), "avg_price"));
+        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("sum"), Collections.singletonList(price_col), "sum_price"));
+        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("max"), Collections.singletonList(price_col), "max_price"));
+        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("min"), Collections.singletonList(price_col), null));
 
-        int dateCid = schema.column("date");
+        int dateCid = schema.cid("date");
         bucket.scan(schema, Arrays.asList(
                 new Filter(dateCid, OpType.GT, 20190525),
                 new Filter(dateCid, OpType.LT, 20190530)
-        ), scanner);
+        ), querier);
 
-        List<ResultRow> resultRows = scanner.getResultSet().resultRows();
+        List<ResultRow> resultRows = querier.getResultSet().resultRows();
 
         ResultRow resultRow = resultRows.get(0);
         assertEquals(resultRow.get(0), 300100);
@@ -329,7 +350,6 @@ public class BucketTest {
         assertEquals(resultRow.get(4), 288);
         assertEquals(resultRow.get(5), 258);
 
-        scanner.getResultSet().printTable();
+        querier.getResultSet().printTable();
     }
-    */
 }

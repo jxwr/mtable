@@ -4,7 +4,9 @@ import com.company.mtable.core.types.DataType;
 import com.company.mtable.core.types.Types;
 import com.company.mtable.schema.Column;
 
+import javax.xml.crypto.Data;
 import java.lang.reflect.Method;
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,11 +21,19 @@ public class FunctionInfo {
     private List<DataType> inputTypes;
     private boolean isAggregate;
 
-    public FunctionInfo(Class funcClass) {
+    private FunctionInfo(Class funcClass, DataType dataType, List<DataType> inputTypes, boolean isAggregate) {
         this.funcClass = funcClass;
-        this.dataType = returnType();
-        this.inputTypes = cacheInputTypes(funcClass);
-        this.isAggregate = cacheIsAggregateFunction();
+        this.dataType = dataType;
+        this.inputTypes = inputTypes;
+        this.isAggregate = isAggregate;
+    }
+
+    public static FunctionInfo from(Class funcClass) {
+        DataType dataType = returnType(funcClass);
+        List<DataType> inputTypes = getInputTypes(funcClass);
+        boolean isAggregate = isAggregateFunction(funcClass);
+
+        return new FunctionInfo(funcClass, dataType, inputTypes, isAggregate);
     }
 
     public String name() {
@@ -38,7 +48,7 @@ public class FunctionInfo {
         return this.inputTypes;
     }
 
-    private boolean cacheIsAggregateFunction() {
+    private static boolean isAggregateFunction(Class funcClass) {
         Method[] methods = funcClass.getMethods();
         for (Method method : methods) {
             if (method.getName().equals("finish")) {
@@ -48,19 +58,18 @@ public class FunctionInfo {
         return false;
     }
 
-    private DataType returnType() {
+    private static DataType returnType(Class funcClass) {
         Method[] methods = funcClass.getMethods();
         for (Method method : methods) {
             if (method.getName().equals("call") || method.getName().equals("finish")) {
                 Class returnType = method.getReturnType();
-                System.out.println(method.getName() + " =====> " + returnType);
                 return Types.fromClass(returnType);
             }
         }
         return null;
     }
 
-    private List<DataType> cacheInputTypes(Class funcClass) {
+    private static List<DataType> getInputTypes(Class funcClass) {
         List<DataType> types = new ArrayList<>();
         Method[] methods = funcClass.getMethods();
         for (Method method : methods) {
@@ -76,23 +85,27 @@ public class FunctionInfo {
         return types;
     }
 
-    private boolean checkInputTypes(List<Object> params) {
+    private String makeErrorMessage(int i, DataType left, DataType right) {
+        return "Expected " + right.typeName() + " at " + i + ", got " + left.typeName();
+    }
+
+    public String checkInputTypes(List<Object> params) {
         for (int i = 0; i < this.inputTypes.size(); i++) {
             Object param = params.get(i);
             DataType rightType = this.inputTypes.get(i);
             if (param instanceof Column) {
                 DataType leftType = ((Column)param).getType();
-                if (!leftType.equals(rightType)) {
-                    return false;
+                if (!rightType.acceptsType(leftType)) {
+                    return makeErrorMessage(i, leftType, rightType);
                 }
             } else {
                 DataType leftType = Types.fromClass(param.getClass());
-                if (!leftType.equals(rightType)) {
-                    return false;
+                if (!rightType.acceptsType(leftType)) {
+                    return makeErrorMessage(i, leftType, rightType);
                 }
             }
         }
-        return true;
+        return null;
     }
 
     public Object func() {

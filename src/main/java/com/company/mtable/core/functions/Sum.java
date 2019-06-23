@@ -14,7 +14,7 @@ public class Sum implements AFn1<Number, Long> {
 
     @Override
     public void handle(Number val) throws Exception {
-        sum += val.longValue();
+        sum += (long)val;
     }
 
     @Override

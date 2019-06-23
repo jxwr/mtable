@@ -2,6 +2,8 @@ package com.company.mtable.core.scanners;
 
 import com.company.mtable.core.Record;
 import com.company.mtable.core.Scanner;
+import com.company.mtable.core.types.DataType;
+import com.company.mtable.core.types.Types;
 import com.company.mtable.schema.Column;
 import com.company.mtable.schema.Schema;
 
@@ -15,7 +17,7 @@ public class TablePrinter implements Scanner {
     private boolean hideHeader = false;
 
     private int minRowLen(Column c) {
-        int len = (c.getName().length()+2);
+        int len = (c.getName().length()+3);
         return len < 10 ? 10 : len;
     }
 
@@ -31,11 +33,11 @@ public class TablePrinter implements Scanner {
         List<Column> cs = schema.getColumns();
 
         if (firstline && !hideHeader) {
-            System.out.printf("\nResults of table %s:\n", schema.getTableName());
+            System.out.printf("\nResults of %s:\n", schema.getTableName());
             printline(cs, '-');
 
             for (Column c : cs) {
-                System.out.printf("%" + minRowLen(c) + "s|", c.getName());
+                System.out.printf("%" + minRowLen(c) + "s|", c.getName() + "[" + Types.typeChar(c.getType()));
             }
             println();
 
