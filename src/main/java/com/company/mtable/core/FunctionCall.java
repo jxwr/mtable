@@ -61,7 +61,7 @@ public class FunctionCall implements Selection {
         return this.funcInfo.dataType();
     }
 
-    public List<DataType> inputTypes(List<Object> params) {
+    public static List<DataType> paramsTypes(List<Object> params) {
         List<DataType> types = new ArrayList<>(params.size());
         for (Object param : params) {
             DataType type;
