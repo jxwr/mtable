@@ -1,13 +1,14 @@
 package com.company.mtable.core.types;
 
-import com.company.mtable.core.datatypes.Tuple2;
-
+import java.sql.Timestamp;
 import java.util.Date;
 
 /**
  * Companion Objects
  */
 public interface Types {
+
+    DataType DoubleType = new DoubleType();
 
     DataType LongType = new LongType();
 
@@ -17,15 +18,17 @@ public interface Types {
 
     DataType ByteType = new ByteType();
 
+    DataType NumberType = new NumberType();
+
     DataType BooleanType = new BooleanType();
 
     DataType StringType = new StringType();
 
     DataType DateType = new DateType();
 
-    DataType NumberType = new NumberType();
-
     DataType AnyType = new AnyType();
+
+    DataType TimestampType = new TimestampType();
 
     static DataType fromClass(Class klass) {
         if (klass.equals(Integer.class)) {
@@ -34,6 +37,8 @@ public interface Types {
             return LongType;
         } else if (klass.equals(Short.class)) {
             return ShortType;
+        } else if (klass.equals(Double.class)) {
+            return DoubleType;
         } else if (klass.equals(Byte.class)) {
             return ByteType;
         } else if (klass.equals(Number.class)) {
@@ -42,6 +47,8 @@ public interface Types {
             return StringType;
         } else if (klass.equals(Date.class)) {
             return DateType;
+        } else if (klass.equals(Timestamp.class)) {
+            return TimestampType;
         }
         return AnyType;
     }
@@ -49,14 +56,18 @@ public interface Types {
     static char typeChar(DataType dataType) {
         if (dataType == Types.IntegerType) {
             return 'I';
-        } else if (dataType == Types.BooleanType) {
-            return 'B';
         } else if (dataType == Types.LongType) {
             return 'L';
         } else if (dataType == Types.ByteType) {
             return 'b';
+        } else if (dataType == Types.ShortType) {
+            return 's';
+        } else if (dataType == Types.DoubleType) {
+            return 'd';
         } else if (dataType == Types.NumberType) {
             return 'N';
+        } else if (dataType == Types.BooleanType) {
+            return 'B';
         } else if (dataType == Types.StringType) {
             return 'S';
         } else if (dataType == Types.DateType) {

@@ -6,12 +6,13 @@
 * mtable api ✔
 * 更新自动类型转换 ✔
 * 函数入参类型校验和自动转换 ✔  
-* datatype, list map tuple date
+* datatype, list map tuple date float
 * udf / udaf ✔
   - 在线代码编译类型问题没解决，加载Jar包OK 
 * bucket支持一个range, 避免太多map ✔ 
   - 支持动态数据分配
 * graphql / mql
+* API简化，使用优化
 
 ##### 升级功能
 * multi index
