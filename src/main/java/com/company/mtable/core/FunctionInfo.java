@@ -29,9 +29,8 @@ public class FunctionInfo {
     }
 
     public static FunctionInfo from(Class funcClass) {
-        DataType dataType = returnType(funcClass);
+        DataType dataType = getReturnType(funcClass);
         List<DataType> inputTypes = getInputTypes(funcClass);
-
         boolean isAggregate = isAggregateFunction(funcClass);
 
         return new FunctionInfo(funcClass, dataType, inputTypes, isAggregate);
@@ -47,48 +46,6 @@ public class FunctionInfo {
 
     public List<DataType> inputTypes() {
         return this.inputTypes;
-    }
-
-    private static boolean isAggregateFunction(Class funcClass) {
-        Method[] methods = funcClass.getMethods();
-        for (Method method : methods) {
-            if (method.getName().equals("finish")) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static DataType returnType(Class funcClass) {
-        Method[] methods = funcClass.getMethods();
-        for (Method method : methods) {
-            if (method.getName().equals("call") || method.getName().equals("finish")) {
-                Class returnType = method.getReturnType();
-                return Types.fromClass(returnType);
-            }
-        }
-        return null;
-    }
-
-    private static List<DataType> getInputTypes(Class funcClass) {
-        List<DataType> types = new ArrayList<>();
-        Method[] methods = funcClass.getMethods();
-        for (Method method : methods) {
-            System.out.println(funcClass.getName() + " ==> " + method.getName());
-            if (method.getName().equals("call") || method.getName().equals("handle")) {
-                Class<?>[] typeClasses = method.getParameterTypes();
-                for (int i = 0; i < typeClasses.length; i++) {
-                    Class<?> typeClass = typeClasses[i];
-                    types.add(Types.fromClass(typeClass));
-                }
-                break;
-            }
-        }
-        return types;
-    }
-
-    private String makeErrorMessage(int i, DataType left, DataType right) {
-        return "Expected " + right.typeName() + " at " + i + ", got " + left.typeName();
     }
 
     public String checkInputTypes(List<Object> params) {
@@ -120,5 +77,61 @@ public class FunctionInfo {
 
     public boolean isAggregateFunction() {
         return isAggregate;
+    }
+
+    private static boolean isAggregateFunction(Class funcClass) {
+        Method[] methods = funcClass.getMethods();
+        for (Method method : methods) {
+            if (method.getName().equals("finish")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static DataType getReturnType(Class funcClass) {
+        Method[] methods = funcClass.getMethods();
+        for (Method method : methods) {
+            if (method.getName().equals("call") || method.getName().equals("finish")) {
+                Class returnType = method.getReturnType();
+                return Types.fromClass(returnType);
+            }
+        }
+        return null;
+    }
+
+    private static List<DataType> getInputTypes(Class funcClass) {
+        List<DataType> types = new ArrayList<>();
+        Method[] methods = funcClass.getMethods();
+        for (Method method : methods) {
+            System.out.println(funcClass.getName() + " ==> " + method.getName());
+            if (method.getName().equals("call") || method.getName().equals("handle")) {
+                Class<?>[] typeClasses = method.getParameterTypes();
+                for (int i = 0; i < typeClasses.length; i++) {
+                    Class<?> typeClass = typeClasses[i];
+                    types.add(Types.fromClass(typeClass));
+                }
+                break;
+            }
+        }
+        return types;
+    }
+
+    public static List<DataType> paramsTypes(List<Object> params) {
+        List<DataType> types = new ArrayList<>(params.size());
+        for (Object param : params) {
+            DataType type;
+            if (param instanceof Column) {
+                type = ((Column) param).getType();
+            } else {
+                type = Types.fromClass(param.getClass());
+            }
+            types.add(type);
+        }
+        return types;
+    }
+
+    private String makeErrorMessage(int i, DataType left, DataType right) {
+        return "Expected " + right.typeName() + " at " + i + ", got " + left.typeName();
     }
 }

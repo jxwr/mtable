@@ -61,20 +61,6 @@ public class FunctionCall implements Selection {
         return this.funcInfo.dataType();
     }
 
-    public static List<DataType> paramsTypes(List<Object> params) {
-        List<DataType> types = new ArrayList<>(params.size());
-        for (Object param : params) {
-            DataType type;
-            if (param instanceof Column) {
-                type = ((Column) param).getType();
-            } else {
-                type = Types.fromClass(param.getClass());
-            }
-            types.add(type);
-        }
-        return types;
-    }
-
     @Override
     public SelectionHandler getHandler(boolean aggregateQuery) {
         List<Integer> idxs = new ArrayList<>();
