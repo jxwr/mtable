@@ -1,8 +1,7 @@
 package com.company.mtable.core;
 
-import com.company.mtable.core.fn.*;
+import com.company.mtable.core.ifn.*;
 import com.company.mtable.core.types.DataType;
-import com.company.mtable.core.types.Types;
 import com.company.mtable.exception.ParameterTypeError;
 import com.company.mtable.schema.Column;
 
@@ -21,14 +20,6 @@ public class FunctionCall implements Selection {
 
     private String name;
 
-    public static FunctionCall checkAndCreate(FunctionInfo funcInfo, List<Object> params, String as) throws ParameterTypeError {
-        String errorMsg = funcInfo.checkInputTypes(params);
-        if (errorMsg != null) {
-            throw new ParameterTypeError(errorMsg);
-        }
-        return new FunctionCall(funcInfo, params, as);
-    }
-
     private FunctionCall(FunctionInfo funcInfo, List<Object> params, String as) {
         this.funcInfo = funcInfo;
         this.params = params;
@@ -45,6 +36,14 @@ public class FunctionCall implements Selection {
         } else {
             this.name = as;
         }
+    }
+
+    public static FunctionCall checkAndCreate(FunctionInfo funcInfo, List<Object> params, String as) throws ParameterTypeError {
+        String errorMsg = funcInfo.checkInputTypes(params);
+        if (errorMsg != null) {
+            throw new ParameterTypeError(errorMsg);
+        }
+        return new FunctionCall(funcInfo, params, as);
     }
 
     public boolean isAggregateFunction() {
@@ -110,13 +109,20 @@ public class FunctionCall implements Selection {
             }
 
             switch (params.length) {
-                case 0: return ((Fn0)func).call();
-                case 1: return ((Fn1)func).call(params[0]);
-                case 2: return ((Fn2)func).call(params[0], params[1]);
-                case 3: return ((Fn3)func).call(params[0], params[1], params[2]);
-                case 4: return ((Fn4)func).call(params[0], params[1], params[2], params[3]);
-                case 5: return ((Fn5)func).call(params[0], params[1], params[2], params[3], params[4]);
-                default: return ((Fn)func).call(params);
+                case 0:
+                    return ((Fn0) func).call();
+                case 1:
+                    return ((Fn1) func).call(params[0]);
+                case 2:
+                    return ((Fn2) func).call(params[0], params[1]);
+                case 3:
+                    return ((Fn3) func).call(params[0], params[1], params[2]);
+                case 4:
+                    return ((Fn4) func).call(params[0], params[1], params[2], params[3]);
+                case 5:
+                    return ((Fn5) func).call(params[0], params[1], params[2], params[3], params[4]);
+                default:
+                    return ((Fn) func).call(params);
             }
         }
 
@@ -151,13 +157,26 @@ public class FunctionCall implements Selection {
                 params[i] = record.get(col);
             }
             switch (params.length) {
-                case 0: ((AFn0)func).handle(); break;
-                case 1: ((AFn1)func).handle(params[0]); break;
-                case 2: ((AFn2)func).handle(params[0], params[1]); break;
-                case 3: ((AFn3)func).handle(params[0], params[1], params[2]); break;
-                case 4: ((AFn4)func).handle(params[0], params[1], params[2], params[3]); break;
-                case 5: ((AFn5)func).handle(params[0], params[1], params[2], params[3], params[4]); break;
-                default: ((AFn)func).handle(params);
+                case 0:
+                    ((AFn0) func).handle();
+                    break;
+                case 1:
+                    ((AFn1) func).handle(params[0]);
+                    break;
+                case 2:
+                    ((AFn2) func).handle(params[0], params[1]);
+                    break;
+                case 3:
+                    ((AFn3) func).handle(params[0], params[1], params[2]);
+                    break;
+                case 4:
+                    ((AFn4) func).handle(params[0], params[1], params[2], params[3]);
+                    break;
+                case 5:
+                    ((AFn5) func).handle(params[0], params[1], params[2], params[3], params[4]);
+                    break;
+                default:
+                    ((AFn) func).handle(params);
             }
             return null;
         }
@@ -165,13 +184,20 @@ public class FunctionCall implements Selection {
         @Override
         public Object finish() throws Exception {
             switch (params.length) {
-                case 0: return ((AFn0)func).finish();
-                case 1: return ((AFn1)func).finish();
-                case 2: return ((AFn2)func).finish();
-                case 3: return ((AFn3)func).finish();
-                case 4: return ((AFn4)func).finish();
-                case 5: return ((AFn5)func).finish();
-                default: return ((AFn)func).finish();
+                case 0:
+                    return ((AFn0) func).finish();
+                case 1:
+                    return ((AFn1) func).finish();
+                case 2:
+                    return ((AFn2) func).finish();
+                case 3:
+                    return ((AFn3) func).finish();
+                case 4:
+                    return ((AFn4) func).finish();
+                case 5:
+                    return ((AFn5) func).finish();
+                default:
+                    return ((AFn) func).finish();
             }
         }
     }

@@ -1,7 +1,7 @@
 package com.company.mtable.core;
 
+import com.company.mtable.core.scanners.TablePrinter;
 import com.company.mtable.exception.InvalidPartitionFilterException;
-import com.company.mtable.core.scanners.*;
 import com.company.mtable.schema.Schema;
 
 import java.util.*;

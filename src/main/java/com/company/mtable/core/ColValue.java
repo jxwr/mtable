@@ -5,6 +5,14 @@ package com.company.mtable.core;
  */
 public class ColValue {
 
+    private int cid;
+    private Object value;
+
+    public ColValue(int cid, Object value) {
+        this.cid = cid;
+        this.value = value;
+    }
+
     public int getCid() {
         return cid;
     }
@@ -20,13 +28,4 @@ public class ColValue {
     public void setValue(Object value) {
         this.value = value;
     }
-
-    public ColValue(int cid, Object value) {
-        this.cid = cid;
-        this.value = value;
-    }
-
-    private int cid;
-
-    private Object value;
 }

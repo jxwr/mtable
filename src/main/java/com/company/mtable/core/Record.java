@@ -6,8 +6,15 @@ import com.company.mtable.schema.Schema;
 
 public class Record {
 
+    private Object[] values;
+
     private Record(Object[] values) {
         this.values = values;
+    }
+
+    public static Record newRecord(Schema schema) {
+        Object[] values = new Object[schema.getColumns().size()];
+        return new Record(values);
     }
 
     public Object get(int cid) {
@@ -46,13 +53,6 @@ public class Record {
         sb.append(')');
         return sb.toString();
     }
-
-    public static Record newRecord(Schema schema) {
-        Object[] values = new Object[schema.getColumns().size()];
-        return new Record(values);
-    }
-
-    private Object[] values;
 
     public Object get(Column col) {
         return col.getType().value(values[col.getCid()]);

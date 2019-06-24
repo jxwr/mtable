@@ -2,8 +2,6 @@ package com.company.mtable.core;
 
 import com.company.mtable.schema.Column;
 import com.company.mtable.schema.Schema;
-import static com.company.mtable.core.types.Types.*;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,18 +9,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static com.company.mtable.core.types.Types.IntegerType;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by jxwr on 2019/6/18.
  */
 public class BucketTest {
     private Schema schema;
-
-    @Before
-    public void setup() {
-        schema = newSchema();
-    }
 
     private static Schema newSchema() {
         Schema schema = new Schema("product_info");
@@ -37,6 +31,11 @@ public class BucketTest {
         schema.setPartitionKey("poi_id");
         schema.setUniqueIndexKeys(Arrays.asList("date", "product_id"));
         return schema;
+    }
+
+    @Before
+    public void setup() {
+        schema = newSchema();
     }
 
     @Test
@@ -75,7 +74,7 @@ public class BucketTest {
             record.set(schema.column("poi_id"), i);
             record.set(schema.column("product_id"), i);
             record.set(schema.column("customer_id"), i * 203);
-            record.set(schema.column("date"), i%2);
+            record.set(schema.column("date"), i % 2);
             record.set(schema.column("trade_type"), i);
             record.set(schema.column("selling_price"), i);
 
@@ -104,7 +103,7 @@ public class BucketTest {
     public void deleteIndex() throws Exception {
         SkipListBucket bucket = mkBucket();
         List<Filter> filters = Arrays.asList(
-                new Filter(schema.getUniqueIndexCids()[0], OpType.EQ, 2%2),
+                new Filter(schema.getUniqueIndexCids()[0], OpType.EQ, 2 % 2),
                 new Filter(schema.getUniqueIndexCids()[1], OpType.EQ, 2)
         );
         int n = bucket.delete(schema, filters);
@@ -124,7 +123,7 @@ public class BucketTest {
     public void update() throws Exception {
         SkipListBucket bucket = mkBucket();
         List<Filter> filters = Arrays.asList(
-                new Filter(schema.getUniqueIndexCids()[0], OpType.EQ, 2%2),
+                new Filter(schema.getUniqueIndexCids()[0], OpType.EQ, 2 % 2),
                 new Filter(schema.getUniqueIndexCids()[1], OpType.EQ, 2)
         );
         int n = bucket.update(schema, filters,
@@ -138,7 +137,7 @@ public class BucketTest {
         bucket.printTable(schema);
 
         filters = Arrays.asList(
-                new Filter(schema.getUniqueIndexCids()[0], OpType.EQ, 2%2),
+                new Filter(schema.getUniqueIndexCids()[0], OpType.EQ, 2 % 2),
                 new Filter(schema.getUniqueIndexCids()[1], OpType.EQ, 8)
         );
         n = bucket.update(schema, filters,
@@ -273,9 +272,9 @@ public class BucketTest {
             record.set(schema.column("poi_id"), 100100);
             record.set(schema.column("product_id"), 300100);
             record.set(schema.column("customer_id"), 33);
-            record.set(schema.column("date"), 20190523+i);
+            record.set(schema.column("date"), 20190523 + i);
             record.set(schema.column("trade_type"), 1);
-            record.set(schema.column("selling_price"), 228+i*10);
+            record.set(schema.column("selling_price"), 228 + i * 10);
             bucket.put(schema, record);
         }
 
@@ -284,9 +283,9 @@ public class BucketTest {
             record.set(schema.column("poi_id"), 100100);
             record.set(schema.column("product_id"), 300200);
             record.set(schema.column("customer_id"), 33);
-            record.set(schema.column("date"), 20190523+i);
+            record.set(schema.column("date"), 20190523 + i);
             record.set(schema.column("trade_type"), 1);
-            record.set(schema.column("selling_price"), 78+i*10);
+            record.set(schema.column("selling_price"), 78 + i * 10);
             bucket.put(schema, record);
         }
 
@@ -295,9 +294,9 @@ public class BucketTest {
             record.set(schema.column("poi_id"), 100100);
             record.set(schema.column("product_id"), 300300);
             record.set(schema.column("customer_id"), 33);
-            record.set(schema.column("date"), 20190523+i);
+            record.set(schema.column("date"), 20190523 + i);
             record.set(schema.column("trade_type"), 1);
-            record.set(schema.column("selling_price"), 58+i*10);
+            record.set(schema.column("selling_price"), 58 + i * 10);
             bucket.put(schema, record);
         }
 
@@ -306,9 +305,9 @@ public class BucketTest {
             record.set(schema.column("poi_id"), 100100);
             record.set(schema.column("product_id"), 300400);
             record.set(schema.column("customer_id"), 33);
-            record.set(schema.column("date"), 20190526+i);
+            record.set(schema.column("date"), 20190526 + i);
             record.set(schema.column("trade_type"), 2);
-            record.set(schema.column("selling_price"), 138+i*10);
+            record.set(schema.column("selling_price"), 138 + i * 10);
             bucket.put(schema, record);
         }
         return bucket;

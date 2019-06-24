@@ -1,10 +1,5 @@
 package com.company.mtable.core;
 
-import com.company.mtable.schema.Column;
-import com.company.mtable.schema.Schema;
-
-import java.util.List;
-
 /**
  * Created by jxwr on 2019/6/17.
  */
@@ -24,11 +19,11 @@ public class ResultRow {
     }
 
     public Integer getInt(int i) {
-        return (Integer)get(i);
+        return (Integer) get(i);
     }
 
     public Long getLong(int i) {
-        return (Long)get(i);
+        return (Long) get(i);
     }
 
     public void set(int i, Object val) {
@@ -41,7 +36,7 @@ public class ResultRow {
         sb.append('(');
         for (int i = 0; i < values.length; i++) {
             sb.append(values[i]);
-            if (i < values.length-1) {
+            if (i < values.length - 1) {
                 sb.append(',');
             }
         }

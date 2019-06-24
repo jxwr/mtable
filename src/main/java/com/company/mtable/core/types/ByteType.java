@@ -16,6 +16,6 @@ public class ByteType extends NumberType {
 
     @Override
     public Object value(Object value) {
-        return ((Number)value).byteValue();
+        return ((Number) value).byteValue();
     }
 }

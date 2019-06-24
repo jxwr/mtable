@@ -35,9 +35,9 @@ public class MTable {
     }
 
     public void put(Record record) {
-        long pval = ((Number)record.get(schema.getPartitionColumn().getCid())).longValue();
+        long pval = ((Number) record.get(schema.getPartitionColumn().getCid())).longValue();
 
-        Bucket bucket = buckets.computeIfAbsent((short)(pval % NUM_BUCKETS), k -> new SkipListBucket());
+        Bucket bucket = buckets.computeIfAbsent((short) (pval % NUM_BUCKETS), k -> new SkipListBucket());
 
         bucket.put(schema, record);
     }
@@ -91,7 +91,7 @@ public class MTable {
             if (f.getCid() == schema.getPartitionColumn().getCid()) {
                 if (f.getOp() != OpType.EQ)
                     throw new InvalidPartitionFilterException();
-                return (short)(((Number)f.getValue()).shortValue() % NUM_BUCKETS);
+                return (short) (((Number) f.getValue()).shortValue() % NUM_BUCKETS);
             }
         }
 
@@ -109,7 +109,7 @@ public class MTable {
     public void printTable() {
         boolean first = true;
         for (Bucket bucket : buckets.values()) {
-            ((SkipListBucket)bucket).printTable(schema, !first);
+            ((SkipListBucket) bucket).printTable(schema, !first);
             first = false;
         }
     }

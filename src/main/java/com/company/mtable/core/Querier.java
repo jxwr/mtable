@@ -14,14 +14,11 @@ import java.util.Map;
  */
 public class Querier implements Scanner {
 
+    private static final IndexValue singleGroupIndexValue = new IndexValue(new Object[]{Integer.MAX_VALUE});
     private ResultSet resultSet = new ResultSet();
-
     private List<Column> groupBy;
-
     private List<Selection> selections = new ArrayList<>();
-
     private Map<IndexValue, List<SelectionHandler>> handlersGroup;
-
     private boolean isAggregateQuery;
 
     public void addSelection(Projection projection) {
@@ -108,8 +105,6 @@ public class Querier implements Scanner {
     public ResultSet getResultSet() {
         return resultSet;
     }
-
-    private static final IndexValue singleGroupIndexValue = new IndexValue(new Object[]{Integer.MAX_VALUE});
 
     private IndexValue groupIndexValue(Record record, List<Column> groupBy) {
         if (groupBy == null || groupBy.isEmpty()) {

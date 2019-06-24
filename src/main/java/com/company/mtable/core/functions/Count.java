@@ -1,6 +1,6 @@
 package com.company.mtable.core.functions;
 
-import com.company.mtable.core.fn.AFn1;
+import com.company.mtable.core.ifn.AFn1;
 
 /**
  * Created by jxwr on 2019/6/20.

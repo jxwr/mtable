@@ -2,7 +2,6 @@ package com.company.mtable.core.scanners;
 
 import com.company.mtable.core.Record;
 import com.company.mtable.core.Scanner;
-import com.company.mtable.core.types.DataType;
 import com.company.mtable.core.types.Types;
 import com.company.mtable.schema.Column;
 import com.company.mtable.schema.Schema;
@@ -17,7 +16,7 @@ public class TablePrinter implements Scanner {
     private boolean hideHeader = false;
 
     private int minRowLen(Column c) {
-        int len = (c.getName().length()+3);
+        int len = (c.getName().length() + 3);
         return len < 10 ? 10 : len;
     }
 

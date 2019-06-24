@@ -9,21 +9,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.company.mtable.core.types.Types.ByteType;
-import static com.company.mtable.core.types.Types.IntegerType;
-import static com.company.mtable.core.types.Types.StringType;
-import static org.junit.Assert.*;
+import static com.company.mtable.core.types.Types.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by jxwr on 2019/6/21.
  */
 public class MTableTest {
     private Schema schema;
-
-    @Before
-    public void setUp() throws Exception {
-        schema = newSchema();
-    }
 
     private static Schema newSchema() {
         Schema schema = new Schema("product_info");
@@ -39,6 +32,11 @@ public class MTableTest {
         schema.setPartitionKey("poi_id");
         schema.setUniqueIndexKeys(Arrays.asList("poi_id", "date", "product_id"));
         return schema;
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        schema = newSchema();
     }
 
     @Test
@@ -97,9 +95,9 @@ public class MTableTest {
             record.set(schema.column("poi_id"), 100100);
             record.set(schema.column("product_id"), 300100);
             record.set(schema.column("customer_id"), 33);
-            record.set(schema.column("date"), 20190523+i);
+            record.set(schema.column("date"), 20190523 + i);
             record.set(schema.column("trade_type"), 1);
-            record.set(schema.column("selling_price"), 228+i*10);
+            record.set(schema.column("selling_price"), 228 + i * 10);
             table.put(record);
         }
 
@@ -108,9 +106,9 @@ public class MTableTest {
             record.set(schema.column("poi_id"), 100100);
             record.set(schema.column("product_id"), 300200);
             record.set(schema.column("customer_id"), 33);
-            record.set(schema.column("date"), 20190523+i);
+            record.set(schema.column("date"), 20190523 + i);
             record.set(schema.column("trade_type"), 1);
-            record.set(schema.column("selling_price"), 78+i*10);
+            record.set(schema.column("selling_price"), 78 + i * 10);
             table.put(record);
         }
 
@@ -119,9 +117,9 @@ public class MTableTest {
             record.set(schema.column("poi_id"), 100100);
             record.set(schema.column("product_id"), 300300);
             record.set(schema.column("customer_id"), 33);
-            record.set(schema.column("date"), 20190523+i);
+            record.set(schema.column("date"), 20190523 + i);
             record.set(schema.column("trade_type"), 1);
-            record.set(schema.column("selling_price"), 58+i*10);
+            record.set(schema.column("selling_price"), 58 + i * 10);
             table.put(record);
         }
 
@@ -130,9 +128,9 @@ public class MTableTest {
             record.set(schema.column("poi_id"), 100100);
             record.set(schema.column("product_id"), 300400L);
             record.set(schema.column("customer_id"), 33);
-            record.set(schema.column("date"), 20190526+i);
+            record.set(schema.column("date"), 20190526 + i);
             record.set(schema.column("trade_type"), 2);
-            record.set(schema.column("selling_price"), 138+i*10);
+            record.set(schema.column("selling_price"), 138 + i * 10);
             table.put(record);
         }
         return table;

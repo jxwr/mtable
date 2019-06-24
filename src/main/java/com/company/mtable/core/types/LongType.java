@@ -17,6 +17,6 @@ public class LongType extends NumberType {
 
     @Override
     public Object value(Object value) {
-        return ((Number)value).longValue();
+        return ((Number) value).longValue();
     }
 }

@@ -1,11 +1,8 @@
 package com.company.mtable.core;
 
 import com.company.mtable.exception.UDFCompileException;
-import com.company.mtable.core.fn.*;
-import org.codehaus.janino.*;
-import org.codehaus.janino.Scanner;
+import org.codehaus.janino.ClassBodyEvaluator;
 
-import java.io.IOException;
 import java.io.StringReader;
 
 /**

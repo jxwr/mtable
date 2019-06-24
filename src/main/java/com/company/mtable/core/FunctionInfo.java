@@ -4,9 +4,7 @@ import com.company.mtable.core.types.DataType;
 import com.company.mtable.core.types.Types;
 import com.company.mtable.schema.Column;
 
-import javax.xml.crypto.Data;
 import java.lang.reflect.Method;
-import java.text.Format;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,49 +32,6 @@ public class FunctionInfo {
         boolean isAggregate = isAggregateFunction(funcClass);
 
         return new FunctionInfo(funcClass, dataType, inputTypes, isAggregate);
-    }
-
-    public String name() {
-        return this.funcClass.getSimpleName().toLowerCase();
-    }
-
-    public DataType dataType() {
-        return this.dataType;
-    }
-
-    public List<DataType> inputTypes() {
-        return this.inputTypes;
-    }
-
-    public String checkInputTypes(List<Object> params) {
-        for (int i = 0; i < this.inputTypes.size(); i++) {
-            Object param = params.get(i);
-            DataType rightType = this.inputTypes.get(i);
-            if (param instanceof Column) {
-                DataType leftType = ((Column)param).getType();
-                if (!rightType.acceptsType(leftType)) {
-                    return makeErrorMessage(i, leftType, rightType);
-                }
-            } else {
-                DataType leftType = Types.fromClass(param.getClass());
-                if (!rightType.acceptsType(leftType)) {
-                    return makeErrorMessage(i, leftType, rightType);
-                }
-            }
-        }
-        return null;
-    }
-
-    public Object func() {
-        try {
-            return funcClass.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public boolean isAggregateFunction() {
-        return isAggregate;
     }
 
     private static boolean isAggregateFunction(Class funcClass) {
@@ -129,6 +84,49 @@ public class FunctionInfo {
             types.add(type);
         }
         return types;
+    }
+
+    public String name() {
+        return this.funcClass.getSimpleName().toLowerCase();
+    }
+
+    public DataType dataType() {
+        return this.dataType;
+    }
+
+    public List<DataType> inputTypes() {
+        return this.inputTypes;
+    }
+
+    public String checkInputTypes(List<Object> params) {
+        for (int i = 0; i < this.inputTypes.size(); i++) {
+            Object param = params.get(i);
+            DataType rightType = this.inputTypes.get(i);
+            if (param instanceof Column) {
+                DataType leftType = ((Column) param).getType();
+                if (!rightType.acceptsType(leftType)) {
+                    return makeErrorMessage(i, leftType, rightType);
+                }
+            } else {
+                DataType leftType = Types.fromClass(param.getClass());
+                if (!rightType.acceptsType(leftType)) {
+                    return makeErrorMessage(i, leftType, rightType);
+                }
+            }
+        }
+        return null;
+    }
+
+    public Object func() {
+        try {
+            return funcClass.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean isAggregateFunction() {
+        return isAggregate;
     }
 
     private String makeErrorMessage(int i, DataType left, DataType right) {

@@ -11,22 +11,16 @@ import java.util.Map;
 public class Schema {
 
     private String tableName;
+    private Map<Integer, Column> columnIdMap = new HashMap<>();
+    private Map<String, Column> columnNameMap = new HashMap<>();
+    private List<Column> columns = new ArrayList<>();
+    private Column partitionColumn;
+    private Column[] uniqueIndexColumns;
+    private int[] uniqueIndexCids;
 
     public Schema(String tableName) {
         this.tableName = tableName;
     }
-
-    private Map<Integer, Column> columnIdMap = new HashMap<>();
-
-    private Map<String, Column> columnNameMap = new HashMap<>();
-
-    private List<Column> columns = new ArrayList<>();
-
-    private Column partitionColumn;
-
-    private Column[] uniqueIndexColumns;
-
-    private int[] uniqueIndexCids;
 
     public Schema addColumn(String name, DataType type) {
         Column col = new Column(columns.size(), name, type);

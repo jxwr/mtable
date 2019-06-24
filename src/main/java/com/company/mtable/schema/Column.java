@@ -4,6 +4,10 @@ import com.company.mtable.core.types.DataType;
 
 public class Column {
 
+    private int cid;
+    private String name;
+    private DataType type;
+
     public Column(int cid, String name, DataType type) {
         this.cid = cid;
         this.name = name;
@@ -33,12 +37,6 @@ public class Column {
     public void setType(DataType type) {
         this.type = type;
     }
-
-    private int cid;
-
-    private String name;
-
-    private DataType type;
 
     @Override
     public String toString() {

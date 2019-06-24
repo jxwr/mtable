@@ -16,6 +16,6 @@ public class IntegerType extends NumberType {
 
     @Override
     public Object value(Object value) {
-        return ((Number)value).intValue();
+        return ((Number) value).intValue();
     }
 }

@@ -17,6 +17,6 @@ public class DoubleType extends NumberType {
 
     @Override
     public Object value(Object value) {
-        return ((Number)value).doubleValue();
+        return ((Number) value).doubleValue();
     }
 }

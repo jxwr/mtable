@@ -60,7 +60,7 @@ public class IndexValue implements Comparable<IndexValue> {
         }
 
         for (int i = 0; i < values.length; i++) {
-            if (!this.getValue(i).equals(((IndexValue)that).getValue(i))) {
+            if (!this.getValue(i).equals(((IndexValue) that).getValue(i))) {
                 return false;
             }
         }

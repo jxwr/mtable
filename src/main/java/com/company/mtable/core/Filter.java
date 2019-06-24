@@ -5,17 +5,15 @@ package com.company.mtable.core;
  */
 public class Filter {
 
+    private int cid;
+    private OpType op;
+    private Comparable value;
+
     public Filter(int cid, OpType op, Comparable value) {
         this.cid = cid;
         this.op = op;
         this.value = value;
     }
-
-    private int cid;
-
-    private OpType op;
-
-    private Comparable value;
 
     public int getCid() {
         return cid;
@@ -42,7 +40,7 @@ public class Filter {
     }
 
     public boolean check(Object val) {
-        Comparable cval = (Comparable)val;
+        Comparable cval = (Comparable) val;
 
         switch (op) {
             case EQ:

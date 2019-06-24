@@ -2,16 +2,18 @@ package com.company.mtable.core;
 
 import com.company.mtable.core.types.Types;
 import com.company.mtable.schema.Column;
-import com.company.mtable.schema.Schema;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
  * Created by jxwr on 2019/6/16.
  */
 public class ResultSet {
+
+    private List<Column> columns;
+    private List<ResultRow> resultRows;
+    private boolean firstline = true;
 
     public ResultSet() {
         this.columns = new ArrayList<>();
@@ -34,14 +36,8 @@ public class ResultSet {
         return resultRows;
     }
 
-    private List<Column> columns;
-
-    private List<ResultRow> resultRows;
-
-    private boolean firstline = true;
-
     private int minRowLen(Column c) {
-        int len = (c.getName().length()+3);
+        int len = (c.getName().length() + 3);
         return len < 10 ? 10 : len;
     }
 

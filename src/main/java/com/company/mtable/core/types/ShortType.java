@@ -16,6 +16,6 @@ public class ShortType extends NumberType {
 
     @Override
     public Object value(Object value) {
-        return ((Number)value).shortValue();
+        return ((Number) value).shortValue();
     }
 }
