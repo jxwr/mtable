@@ -98,7 +98,7 @@ public class Filters {
         return ival;
     }
 
-    public static boolean filterAll(Schema schema, Record record, List<Filter> filters) {
+    public static boolean checkAll(Schema schema, Record record, List<Filter> filters) {
         for (Filter filter : filters) {
             int cid = filter.getCid();
             Object val = record.get(cid);

@@ -3,6 +3,7 @@ package com.company.mtable.schema;
 import com.company.mtable.core.IndexValue;
 import com.company.mtable.core.types.DataType;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

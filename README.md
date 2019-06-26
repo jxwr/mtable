@@ -13,6 +13,7 @@
   - 支持动态数据分配
 * graphql / mql
 * API简化，使用优化
+* ORM，创建Schema，插入Record
 
 ##### 升级功能
 * multi index
@@ -24,3 +25,5 @@
 ##### 优化
 * ResultRow和Record合并
 * 全字段取FullProjection，短路处理，避免对象创建，Record对应的Immutable版本，可以是个接口？
+* 并发控制
+* 性能优化

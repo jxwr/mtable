@@ -38,7 +38,7 @@ public class SkipListBucket implements Bucket {
         ConcurrentNavigableMap<IndexValue, Record> slice = slice(lower, upper, filters);
 
         for (Map.Entry<IndexValue, Record> entry : slice.entrySet()) {
-            if (Filters.filterAll(schema, entry.getValue(), filters)) {
+            if (Filters.checkAll(schema, entry.getValue(), filters)) {
                 deleteIndexValues.add(entry.getKey());
             }
         }
@@ -94,7 +94,7 @@ public class SkipListBucket implements Bucket {
         ConcurrentNavigableMap<IndexValue, Record> slice = slice(lower, upper, filters);
 
         for (Map.Entry<IndexValue, Record> entry : slice.entrySet()) {
-            if (Filters.filterAll(schema, entry.getValue(), filters)) {
+            if (Filters.checkAll(schema, entry.getValue(), filters)) {
                 for (ColValue cv : values) {
                     entry.getValue().set(schema.column(cv.getCid()), cv.getValue());
                 }
@@ -129,7 +129,7 @@ public class SkipListBucket implements Bucket {
         int affectedRows = 0;
         ConcurrentNavigableMap<IndexValue, Record> slice = slice(lower, upper, filters);
         for (Record record : slice.values()) {
-            if (Filters.filterAll(schema, record, filters)) {
+            if (Filters.checkAll(schema, record, filters)) {
                 for (ColValue cv : values) {
                     record.set(schema.column(cv.getCid()), cv.getValue());
                 }
@@ -159,7 +159,7 @@ public class SkipListBucket implements Bucket {
 
         // printIndexValues(slice);
         for (Record record : slice.values()) {
-            if (Filters.filterAll(schema, record, filters)) {
+            if (Filters.checkAll(schema, record, filters)) {
                 if (!scanner.handle(schema, record)) {
                     scanner.finish(schema);
                     return;
@@ -188,7 +188,7 @@ public class SkipListBucket implements Bucket {
         ConcurrentNavigableMap<IndexValue, Record> slice = slice(lower, upper, filters);
 
         for (Record record : slice.values()) {
-            if (Filters.filterAll(schema, record, filters)) {
+            if (Filters.checkAll(schema, record, filters)) {
                 results.add(record);
             }
         }
