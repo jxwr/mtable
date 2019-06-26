@@ -30,24 +30,24 @@ public interface Types {
 
     DataType TimestampType = new TimestampType();
 
-    static DataType fromClass(Class klass) {
-        if (klass.equals(Integer.class)) {
+    static DataType fromJavaType(Class<?> klass) {
+        if (klass == Integer.class || klass == Integer.TYPE) {
             return IntegerType;
-        } else if (klass.equals(Long.class)) {
+        } else if (klass == Long.class || klass == Long.TYPE) {
             return LongType;
-        } else if (klass.equals(Short.class)) {
+        } else if (klass == Short.class || klass == Short.TYPE) {
             return ShortType;
-        } else if (klass.equals(Double.class)) {
+        } else if (klass == Double.class || klass == Double.TYPE) {
             return DoubleType;
-        } else if (klass.equals(Byte.class)) {
+        } else if (klass == Byte.class || klass == Byte.TYPE) {
             return ByteType;
-        } else if (klass.equals(Number.class)) {
+        } else if (klass == Number.class) {
             return NumberType;
-        } else if (klass.equals(String.class)) {
+        } else if (klass == String.class) {
             return StringType;
-        } else if (klass.equals(Date.class)) {
+        } else if (klass == Date.class) {
             return DateType;
-        } else if (klass.equals(Timestamp.class)) {
+        } else if (klass == Timestamp.class) {
             return TimestampType;
         }
         return AnyType;

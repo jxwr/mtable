@@ -1,5 +1,6 @@
 package com.company.mtable.core;
 
+import com.company.mtable.core.*;
 import com.company.mtable.schema.Column;
 import com.company.mtable.schema.Schema;
 import org.junit.Before;

@@ -28,4 +28,23 @@ public class StringType extends AbstractDataType {
     public boolean acceptsValue(Object value) {
         return true;
     }
+
+    @Override
+    public Object minValue() {
+        return "";
+    }
+
+    /**
+     * TODO：字符串比较怎么处理？
+     * @return
+     */
+    @Override
+    public Object maxValue() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isConcreteType() {
+        return true;
+    }
 }

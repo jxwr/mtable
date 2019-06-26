@@ -18,4 +18,19 @@ public class ShortType extends NumberType {
     public Object value(Object value) {
         return ((Number) value).shortValue();
     }
+
+    @Override
+    public Short minValue() {
+        return Short.MIN_VALUE;
+    }
+
+    @Override
+    public Short maxValue() {
+        return Short.MAX_VALUE;
+    }
+
+    @Override
+    public boolean isConcreteType() {
+        return true;
+    }
 }

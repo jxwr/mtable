@@ -49,7 +49,7 @@ public class FunctionInfo {
         for (Method method : methods) {
             if (method.getName().equals("call") || method.getName().equals("finish")) {
                 Class returnType = method.getReturnType();
-                return Types.fromClass(returnType);
+                return Types.fromJavaType(returnType);
             }
         }
         return null;
@@ -64,7 +64,7 @@ public class FunctionInfo {
                 Class<?>[] typeClasses = method.getParameterTypes();
                 for (int i = 0; i < typeClasses.length; i++) {
                     Class<?> typeClass = typeClasses[i];
-                    types.add(Types.fromClass(typeClass));
+                    types.add(Types.fromJavaType(typeClass));
                 }
                 break;
             }
@@ -79,7 +79,7 @@ public class FunctionInfo {
             if (param instanceof Column) {
                 type = ((Column) param).getType();
             } else {
-                type = Types.fromClass(param.getClass());
+                type = Types.fromJavaType(param.getClass());
             }
             types.add(type);
         }
@@ -108,7 +108,7 @@ public class FunctionInfo {
                     return makeErrorMessage(i, leftType, rightType);
                 }
             } else {
-                DataType leftType = Types.fromClass(param.getClass());
+                DataType leftType = Types.fromJavaType(param.getClass());
                 if (!rightType.acceptsType(leftType)) {
                     return makeErrorMessage(i, leftType, rightType);
                 }

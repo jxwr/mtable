@@ -28,4 +28,19 @@ public class AnyType extends AbstractDataType {
     public boolean acceptsValue(Object value) {
         return true;
     }
+
+    @Override
+    public Object minValue() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Object maxValue() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isConcreteType() {
+        return false;
+    }
 }

@@ -12,4 +12,10 @@ public interface DataType {
     Object value(Object value);
 
     boolean acceptsValue(Object value);
+
+    Object minValue();
+
+    Object maxValue();
+
+    boolean isConcreteType();
 }

@@ -1,10 +1,12 @@
 package com.company.mtable.core;
 
+import com.company.mtable.core.*;
 import com.company.mtable.schema.Column;
 import com.company.mtable.schema.Schema;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.company.mtable.core.ProductInfo;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -265,5 +267,28 @@ public class MTableTest {
         table.scan(querier);
 
         querier.getResultSet().printTable();
+    }
+
+    @Test
+    public void testSchemaFromType() {
+        Schema schema = Schema.fromClass("productInfo", ProductInfo.class);
+
+        MTable table = new MTable(schema);
+
+        Record record;
+
+        for (int i = 0; i < 10; i++) {
+            record = Record.newRecord(schema);
+            record.set(schema.column("poiId"), 100100);
+            record.set(schema.column("productId"), 300100);
+            record.set(schema.column("productName"), "pname"+i);
+            record.set(schema.column("customerId"), 33);
+            record.set(schema.column("date"), 20190523 + i);
+            record.set(schema.column("tradeType"), 1);
+            record.set(schema.column("sellingPrice"), 228 + i * 10);
+            table.put(record);
+        }
+
+        table.printTable();
     }
 }

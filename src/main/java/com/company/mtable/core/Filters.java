@@ -1,5 +1,7 @@
 package com.company.mtable.core;
 
+import com.company.mtable.core.types.DataType;
+import com.company.mtable.core.types.NumberType;
 import com.company.mtable.exception.InvalidPartitionFilterException;
 import com.company.mtable.schema.Schema;
 
@@ -57,11 +59,13 @@ public class Filters {
                 if (hit != null) {
                     ival.setValue(i++, hit.getValue());
                 } else {
-                    ival.setValue(i++, 0);
+                    DataType type = schema.column(cid).getType();
+                    ival.setValue(i++, type.minValue());
                     fillTail = true;
                 }
             } else {
-                ival.setValue(i++, 0);
+                DataType type = schema.column(cid).getType();
+                ival.setValue(i++, type.minValue());
             }
         }
 
@@ -87,11 +91,13 @@ public class Filters {
                 if (hit != null) {
                     ival.setValue(i++, hit.getValue());
                 } else {
-                    ival.setValue(i++, Integer.MAX_VALUE);
+                    DataType type = schema.column(cid).getType();
+                    ival.setValue(i++, type.maxValue());
                     fillTail = true;
                 }
             } else {
-                ival.setValue(i++, Integer.MAX_VALUE);
+                DataType type = schema.column(cid).getType();
+                ival.setValue(i++, type.maxValue());
             }
         }
 
@@ -106,7 +112,6 @@ public class Filters {
                 return false;
             }
         }
-
         return true;
     }
 }

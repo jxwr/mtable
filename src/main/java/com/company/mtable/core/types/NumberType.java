@@ -29,4 +29,17 @@ public class NumberType extends AbstractDataType {
     public boolean acceptsValue(Object value) {
         return value instanceof Number;
     }
+
+    public Number minValue() {
+        throw new UnsupportedOperationException();
+    }
+
+    public Number maxValue() {
+        throw  new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isConcreteType() {
+        return false;
+    }
 }

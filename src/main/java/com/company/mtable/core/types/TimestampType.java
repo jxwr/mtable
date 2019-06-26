@@ -30,4 +30,19 @@ public class TimestampType implements DataType {
     public boolean acceptsValue(Object value) {
         return value instanceof Timestamp;
     }
+
+    @Override
+    public Object minValue() {
+        return new Timestamp(0);
+    }
+
+    @Override
+    public Object maxValue() {
+        return new Timestamp(Long.MAX_VALUE);
+    }
+
+    @Override
+    public boolean isConcreteType() {
+        return true;
+    }
 }

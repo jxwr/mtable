@@ -39,6 +39,7 @@ public class Filter {
         this.value = value;
     }
 
+    @SuppressWarnings("unchecked")
     public boolean check(Object val) {
         Comparable cval = (Comparable) val;
 

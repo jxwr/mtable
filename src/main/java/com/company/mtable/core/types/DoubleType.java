@@ -12,11 +12,26 @@ public class DoubleType extends NumberType {
 
     @Override
     public Class<Double> typeClass() {
-        return Double.class;
+        return Double.TYPE;
     }
 
     @Override
     public Object value(Object value) {
         return ((Number) value).doubleValue();
+    }
+
+    @Override
+    public Double minValue() {
+        return Double.MIN_VALUE;
+    }
+
+    @Override
+    public Double maxValue() {
+        return Double.MAX_VALUE;
+    }
+
+    @Override
+    public boolean isConcreteType() {
+        return true;
     }
 }

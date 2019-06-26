@@ -18,4 +18,19 @@ public class ByteType extends NumberType {
     public Object value(Object value) {
         return ((Number) value).byteValue();
     }
+
+    @Override
+    public Byte minValue() {
+        return Byte.MIN_VALUE;
+    }
+
+    @Override
+    public Byte maxValue() {
+        return Byte.MAX_VALUE;
+    }
+
+    @Override
+    public boolean isConcreteType() {
+        return true;
+    }
 }

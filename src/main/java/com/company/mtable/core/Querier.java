@@ -151,7 +151,7 @@ public class Querier implements Scanner {
             for (int i = 0; i < resultSet.columns().size(); i++) {
                 Column col = resultSet.columns().get(i);
                 if (col.getType() == Types.AnyType) {
-                    col.setType(Types.fromClass(resultSet.resultRows().get(0).get(i).getClass()));
+                    col.setType(Types.fromJavaType(resultSet.resultRows().get(0).get(i).getClass()));
                 }
             }
         }
