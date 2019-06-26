@@ -19,6 +19,7 @@ public class Querier implements Scanner {
     private final Schema schema;
     private ResultSet resultSet = new ResultSet();
     private List<Column> groupBy;
+    private List<Filter> filters;
     private List<Selection> selections = new ArrayList<>();
     private Map<IndexValue, List<SelectionHandler>> handlersGroup;
     private boolean isAggregateQuery;
@@ -156,6 +157,31 @@ public class Querier implements Scanner {
         }
     }
 
+    @Override
+    public List<Filter> getFilters() {
+        if (filters == null)
+            filters = new ArrayList<>();
+        return filters;
+    }
+
+    public void addFilter(Filter filter) {
+        if (filters == null)
+            filters = new ArrayList<>();
+        filters.add(filter);
+    }
+
+    public void addFilter(int cid, OpType op, Comparable value) {
+        addFilter(new Filter(cid, op, value));
+    }
+
+    public void addFilter(Column col, OpType op, Comparable value) {
+        addFilter(col.getCid(), op, value);
+    }
+
+    public void addFilter(String columnName, OpType op, Comparable value) {
+        addFilter(schema.cid(columnName), op, value);
+    }
+
     public ResultSet getResultSet() {
         return resultSet;
     }
@@ -172,7 +198,6 @@ public class Querier implements Scanner {
             return new IndexValue(values);
         }
     }
-
 
     private boolean isAggregateQuery() {
         return isAggregateQuery;

@@ -1,11 +1,14 @@
 package com.company.mtable.core.scanners;
 
+import com.company.mtable.core.Filter;
+import com.company.mtable.core.OpType;
 import com.company.mtable.core.Record;
 import com.company.mtable.core.Scanner;
 import com.company.mtable.core.types.Types;
 import com.company.mtable.schema.Column;
 import com.company.mtable.schema.Schema;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,7 +16,10 @@ import java.util.List;
  */
 public class TablePrinter implements Scanner {
     private boolean firstline = true;
+
     private boolean hideHeader = false;
+
+    private List<Filter> filters;
 
     private int minRowLen(Column c) {
         int len = (c.getName().length() + 3);
@@ -56,6 +62,23 @@ public class TablePrinter implements Scanner {
     @Override
     public void finish(Schema schema) {
 
+    }
+
+    @Override
+    public List<Filter> getFilters() {
+        if (filters == null)
+            filters = new ArrayList<>();
+        return filters;
+    }
+
+    public void addFilter(Filter filter) {
+        if (filters == null)
+            filters = new ArrayList<>();
+        filters.add(filter);
+    }
+
+    public void addFilter(int cid, OpType op, Comparable value) {
+        addFilter(new Filter(cid, op, value));
     }
 
     private void printline(List<Column> cs, char ch) {

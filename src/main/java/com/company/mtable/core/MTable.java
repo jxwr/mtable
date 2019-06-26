@@ -23,6 +23,10 @@ public class MTable {
         this.buckets = new ConcurrentHashMap<>();
     }
 
+    public Querier newQuerier() {
+        return new Querier(schema);
+    }
+
     public Record get(List<Filter> filters) {
         short bid = getBucketId(filters);
 
@@ -75,7 +79,8 @@ public class MTable {
         return bucket.scan(schema, filters);
     }
 
-    public void scan(List<Filter> filters, Scanner scanner) throws Exception {
+    public void scan(Scanner scanner) throws Exception {
+        List<Filter> filters = scanner.getFilters();
         short bid = getBucketId(filters);
 
         Bucket bucket = buckets.get(bid);

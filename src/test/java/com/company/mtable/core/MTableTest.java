@@ -138,10 +138,10 @@ public class MTableTest {
 
     @Test
     public void scanAggregateScannerByGroup() throws Exception {
-        Querier querier = new Querier(schema);
-
         MTable table = mkTableRealData();
         table.printTable();
+
+        Querier querier = table.newQuerier();
 
         Column groupCol = schema.column(1);
         Column price_col = schema.column(5);
@@ -158,11 +158,9 @@ public class MTableTest {
         querier.addSelection("min", Collections.singletonList(price_col), null);
 
         int dateCid = schema.cid("date");
-        table.scan(Arrays.asList(
-                new Filter(schema.getPartitionColumn().getCid(), OpType.EQ, 100100),
-                new Filter(dateCid, OpType.GT, 20190525),
-                new Filter(dateCid, OpType.LT, 20190530)
-        ), querier);
+        querier.addFilter(schema.getPartitionColumn().getCid(), OpType.EQ, 100100);
+        querier.addFilter(dateCid, OpType.GT, 20190525);
+        querier.addFilter(dateCid, OpType.LT, 20190530);
 
         querier.getResultSet().columns().forEach(c -> System.out.println(c.getType()));
 
@@ -181,10 +179,10 @@ public class MTableTest {
 
     @Test
     public void scanAggregateScannerType0() throws Exception {
-        Querier querier = new Querier(schema);
-
         MTable table = mkTableRealData();
         table.printTable();
+
+        Querier querier = table.newQuerier();
 
         Column tradeTypeCol = schema.column(4);
         Column dateCol = schema.column(3);
@@ -193,11 +191,9 @@ public class MTableTest {
         querier.addSelection(dateCol, null);
 
         int dateCid = schema.cid("date");
-        table.scan(Arrays.asList(
-                new Filter(schema.getPartitionColumn().getCid(), OpType.EQ, 100100),
-                new Filter(dateCid, OpType.GT, 20190525),
-                new Filter(dateCid, OpType.LT, 20190530)
-        ), querier);
+        querier.addFilter(schema.getPartitionColumn().getCid(), OpType.EQ, 100100);
+        querier.addFilter(dateCid, OpType.GT, 20190525);
+        querier.addFilter(dateCid, OpType.LT, 20190530);
 
         List<ResultRow> resultRows = querier.getResultSet().resultRows();
 
@@ -212,10 +208,10 @@ public class MTableTest {
                 "public Object call(Object t1, Object t2) throws Exception { return (Integer)t1 + (Integer)t2;}"
         );
 
-        Querier querier = new Querier(schema);
-
         MTable table = mkTableRealData();
         table.printTable();
+
+        Querier querier = table.newQuerier();
 
         Column tradeTypeCol = schema.column(4);
         Column dateCol = schema.column(3);
@@ -225,12 +221,11 @@ public class MTableTest {
         querier.addSelection("udf_add", Arrays.asList(dateCol, 1000000000), null);
 
         int dateCid = schema.cid("date");
-        table.scan(Arrays.asList(
-                new Filter(schema.getPartitionColumn().getCid(), OpType.EQ, 100100),
-                new Filter(dateCid, OpType.GT, 20190525),
-                new Filter(dateCid, OpType.LT, 20190530)
-        ), querier);
+        querier.addFilter(new Filter(schema.getPartitionColumn().getCid(), OpType.EQ, 100100));
+        querier.addFilter(new Filter(dateCid, OpType.GT, 20190525));
+        querier.addFilter(new Filter(dateCid, OpType.LT, 20190530));
 
+        table.scan(querier);
         querier.getResultSet().printTable();
     }
 
@@ -249,10 +244,10 @@ public class MTableTest {
                         "}\n"
         );
 
-        Querier querier = new Querier(schema);
-
         MTable table = mkTableRealData();
         table.printTable();
+
+        Querier querier = table.newQuerier();
 
         Column tradeTypeCol = schema.column(4);
         Column dateCol = schema.column(3);
@@ -263,11 +258,11 @@ public class MTableTest {
         querier.addSelection("udf_min_sum", Arrays.asList(dateCol, cumstomerCol), null);
 
         int dateCid = schema.cid("date");
-        table.scan(Arrays.asList(
-                new Filter(schema.getPartitionColumn().getCid(), OpType.EQ, 100100),
-                new Filter(dateCid, OpType.GT, 20190525),
-                new Filter(dateCid, OpType.LT, 20190530)
-        ), querier);
+        querier.addFilter(schema.getPartitionColumn().getCid(), OpType.EQ, 100100);
+        querier.addFilter(dateCid, OpType.GT, 20190525);
+        querier.addFilter(dateCid, OpType.LT, 20190530);
+
+        table.scan(querier);
 
         querier.getResultSet().printTable();
     }
