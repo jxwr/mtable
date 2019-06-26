@@ -138,7 +138,7 @@ public class MTableTest {
 
     @Test
     public void scanAggregateScannerByGroup() throws Exception {
-        Querier querier = new Querier();
+        Querier querier = new Querier(schema);
 
         MTable table = mkTableRealData();
         table.printTable();
@@ -181,7 +181,7 @@ public class MTableTest {
 
     @Test
     public void scanAggregateScannerType0() throws Exception {
-        Querier querier = new Querier();
+        Querier querier = new Querier(schema);
 
         MTable table = mkTableRealData();
         table.printTable();
@@ -189,8 +189,8 @@ public class MTableTest {
         Column tradeTypeCol = schema.column(4);
         Column dateCol = schema.column(3);
 
-        querier.addSelection(new Projection(tradeTypeCol, null));
-        querier.addSelection(new Projection(dateCol, null));
+        querier.addSelection(tradeTypeCol, null);
+        querier.addSelection(dateCol, null);
 
         int dateCid = schema.cid("date");
         table.scan(Arrays.asList(
@@ -212,7 +212,7 @@ public class MTableTest {
                 "public Object call(Object t1, Object t2) throws Exception { return (Integer)t1 + (Integer)t2;}"
         );
 
-        Querier querier = new Querier();
+        Querier querier = new Querier(schema);
 
         MTable table = mkTableRealData();
         table.printTable();
@@ -221,9 +221,8 @@ public class MTableTest {
         Column dateCol = schema.column(3);
 
         // select trade_type, udf_add(date, 1000000000) where date > xx and date < xxx
-        querier.addSelection(new Projection(tradeTypeCol, null));
-        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("udf_add"),
-                Arrays.asList(dateCol, 1000000000), null));
+        querier.addSelection(tradeTypeCol, null);
+        querier.addSelection("udf_add", Arrays.asList(dateCol, 1000000000), null);
 
         int dateCid = schema.cid("date");
         table.scan(Arrays.asList(
@@ -250,7 +249,7 @@ public class MTableTest {
                         "}\n"
         );
 
-        Querier querier = new Querier();
+        Querier querier = new Querier(schema);
 
         MTable table = mkTableRealData();
         table.printTable();

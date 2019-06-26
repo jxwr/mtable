@@ -180,7 +180,7 @@ public class BucketTest {
 
     @Test
     public void scanProjectionScanner1() throws Exception {
-        Querier querier = new Querier();
+        Querier querier = new Querier(schema);
 
         SkipListBucket bucket = mkBucket();
         bucket.printTable(schema);
@@ -199,7 +199,7 @@ public class BucketTest {
 
     @Test
     public void scanProjectionScanner2() throws Exception {
-        Querier querier = new Querier();
+        Querier querier = new Querier(schema);
 
         SkipListBucket bucket = mkBucket();
         bucket.printTable(schema);
@@ -218,7 +218,7 @@ public class BucketTest {
 
     @Test
     public void testInputTypeCheck() throws Exception {
-        Querier querier = new Querier();
+        Querier querier = new Querier(schema);
 
         SkipListBucket bucket = mkBucket();
         bucket.printTable(schema);
@@ -237,7 +237,7 @@ public class BucketTest {
 
     @Test
     public void scanAggregateScanner() throws Exception {
-        Querier querier = new Querier();
+        Querier querier = new Querier(schema);
 
         SkipListBucket bucket = mkBucket();
         bucket.printTable(schema);
@@ -245,10 +245,10 @@ public class BucketTest {
         Column col = new Column(1, "product_id", IntegerType);
         Column col2 = new Column(2, "customer_id", IntegerType);
 
-        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("sum"), Collections.singletonList(col), "sum_pid"));
-        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("count"), Collections.singletonList(col2), "count_cid"));
-        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("avg"), Collections.singletonList(col2), "avg_cid"));
-        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("sum"), Collections.singletonList(col2), "sum_cid"));
+        querier.addSelection("sum", Collections.singletonList(col), "sum_pid");
+        querier.addSelection("count", Collections.singletonList(col2), "count_cid");
+        querier.addSelection("avg", Collections.singletonList(col2), "avg_cid");
+        querier.addSelection("sum", Collections.singletonList(col2), "sum_cid");
 
         bucket.scan(schema, Collections.emptyList(), querier);
 
@@ -315,7 +315,7 @@ public class BucketTest {
 
     @Test
     public void scanAggregateScannerByGroup() throws Exception {
-        Querier querier = new Querier();
+        Querier querier = new Querier(schema);
 
         SkipListBucket bucket = mkBucketRealData();
         bucket.printTable(schema);
@@ -327,11 +327,11 @@ public class BucketTest {
         querier.setGroupBy(groupBy);
 
         querier.addSelection(new Projection(groupCol, null));
-        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("count"), Collections.singletonList(price_col), "count_price"));
-        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("avg"), Collections.singletonList(price_col), "avg_price"));
-        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("sum"), Collections.singletonList(price_col), "sum_price"));
-        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("max"), Collections.singletonList(price_col), "max_price"));
-        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("min"), Collections.singletonList(price_col), null));
+        querier.addSelection("count", Collections.singletonList(price_col), "count_price");
+        querier.addSelection("avg", Collections.singletonList(price_col), "avg_price");
+        querier.addSelection("sum", Collections.singletonList(price_col), "sum_price");
+        querier.addSelection("max", Collections.singletonList(price_col), "max_price");
+        querier.addSelection("min", Collections.singletonList(price_col), null);
 
         int dateCid = schema.cid("date");
         bucket.scan(schema, Arrays.asList(

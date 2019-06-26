@@ -1,6 +1,7 @@
 package com.company.mtable.core;
 
 import com.company.mtable.core.types.Types;
+import com.company.mtable.exception.ParameterTypeError;
 import com.company.mtable.schema.Column;
 import com.company.mtable.schema.Schema;
 
@@ -15,18 +16,71 @@ import java.util.Map;
 public class Querier implements Scanner {
 
     private static final IndexValue singleGroupIndexValue = new IndexValue(new Object[]{Integer.MAX_VALUE});
+    private final Schema schema;
     private ResultSet resultSet = new ResultSet();
     private List<Column> groupBy;
     private List<Selection> selections = new ArrayList<>();
     private Map<IndexValue, List<SelectionHandler>> handlersGroup;
     private boolean isAggregateQuery;
 
+    public Querier(Schema schema) {
+        this.schema = schema;
+    }
+
+    /**
+     * ProjectionSelection
+     * @param projection
+     */
     public void addSelection(Projection projection) {
         selections.add(projection);
     }
 
-    public void addSelection(FunctionCall functionInvoke) {
-        selections.add(functionInvoke);
+    /**
+     * ProjectionSelection
+     * @param cid
+     * @param as
+     */
+    public void addSelection(int cid, String as) {
+        Column col = schema.column(cid);
+        this.addSelection(col, as);
+    }
+
+    /**
+     * ProjectionSelection
+     * @param columnName
+     * @param as
+     */
+    public void addSelection(String columnName, String as) {
+        Column col = schema.column(columnName);
+        this.addSelection(col, as);
+    }
+
+    /**
+     * ProjectionSelection
+     * @param col
+     * @param as
+     */
+    public void addSelection(Column col, String as) {
+        this.addSelection(new Projection(col, as));
+    }
+
+    /**
+     * FunctionCallSelection
+     * @param funcName
+     * @param params
+     * @param as
+     * @throws ParameterTypeError
+     */
+    public void addSelection(String funcName, List<Object> params, String as) throws ParameterTypeError {
+        selections.add(FunctionCall.checkAndCreate(FunctionRegistry.get(funcName), params, as));
+    }
+
+    /**
+     * FunctionCallSelection
+     * @param functionCall
+     */
+    public void addSelection(FunctionCall functionCall) {
+        selections.add(functionCall);
     }
 
     public void setGroupBy(List<Column> groupBy) {
