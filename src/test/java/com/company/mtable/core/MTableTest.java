@@ -151,11 +151,11 @@ public class MTableTest {
 
         querier.addSelection(new Projection(groupCol, null));
 
-        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("count"), Collections.singletonList(price_col), null));
-        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("avg"), Collections.singletonList(price_col), null));
-        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("sum"), Collections.singletonList(price_col), "sum_price"));
-        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("max"), Collections.singletonList(price_col), null));
-        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("min"), Collections.singletonList(price_col), null));
+        querier.addSelection("count", Collections.singletonList(price_col), null);
+        querier.addSelection("avg", Collections.singletonList(price_col), null);
+        querier.addSelection("sum", Collections.singletonList(price_col), "sum_price");
+        querier.addSelection("max", Collections.singletonList(price_col), null);
+        querier.addSelection("min", Collections.singletonList(price_col), null);
 
         int dateCid = schema.cid("date");
         table.scan(Arrays.asList(
@@ -259,9 +259,8 @@ public class MTableTest {
         Column cumstomerCol = schema.column(2);
 
         // select trade_type, udf_add(date, 1000000000) where date > xx and date < xxx
-        querier.addSelection(new Projection(tradeTypeCol, null));
-        querier.addSelection(FunctionCall.checkAndCreate(FunctionRegistry.get("udf_min_sum"),
-                Arrays.asList(dateCol, cumstomerCol), null));
+        querier.addSelection(tradeTypeCol, null);
+        querier.addSelection("udf_min_sum", Arrays.asList(dateCol, cumstomerCol), null);
 
         int dateCid = schema.cid("date");
         table.scan(Arrays.asList(
