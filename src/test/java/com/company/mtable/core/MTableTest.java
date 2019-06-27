@@ -1,12 +1,10 @@
 package com.company.mtable.core;
 
-import com.company.mtable.core.*;
 import com.company.mtable.schema.Column;
 import com.company.mtable.schema.Schema;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.company.mtable.core.ProductInfo;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -56,7 +54,7 @@ public class MTableTest {
                 record.set(schema.column("selling_price"), i);
                 record.set(schema.column("product_name"), "pname" + i);
 
-                mtable.put(record);
+                mtable.putRecord(record);
 
                 assertEquals(mtable.get(
                         Arrays.asList(
@@ -100,7 +98,7 @@ public class MTableTest {
             record.set(schema.column("date"), 20190523 + i);
             record.set(schema.column("trade_type"), 1);
             record.set(schema.column("selling_price"), 228 + i * 10);
-            table.put(record);
+            table.putRecord(record);
         }
 
         for (int i = 0; i < 10; i++) {
@@ -111,7 +109,7 @@ public class MTableTest {
             record.set(schema.column("date"), 20190523 + i);
             record.set(schema.column("trade_type"), 1);
             record.set(schema.column("selling_price"), 78 + i * 10);
-            table.put(record);
+            table.putRecord(record);
         }
 
         for (int i = 0; i < 10; i++) {
@@ -122,7 +120,7 @@ public class MTableTest {
             record.set(schema.column("date"), 20190523 + i);
             record.set(schema.column("trade_type"), 1);
             record.set(schema.column("selling_price"), 58 + i * 10);
-            table.put(record);
+            table.putRecord(record);
         }
 
         for (int i = 0; i < 5; i++) {
@@ -133,7 +131,7 @@ public class MTableTest {
             record.set(schema.column("date"), 20190526 + i);
             record.set(schema.column("trade_type"), 2);
             record.set(schema.column("selling_price"), 138 + i * 10);
-            table.put(record);
+            table.putRecord(record);
         }
         return table;
     }
@@ -275,18 +273,15 @@ public class MTableTest {
 
         MTable table = new MTable(schema);
 
-        Record record;
-
         for (int i = 0; i < 10; i++) {
-            record = Record.newRecord(schema);
-            record.set(schema.column("poiId"), 100100);
-            record.set(schema.column("productId"), 300100);
-            record.set(schema.column("productName"), "pname"+i);
-            record.set(schema.column("customerId"), 33);
-            record.set(schema.column("date"), 20190523 + i);
-            record.set(schema.column("tradeType"), 1);
-            record.set(schema.column("sellingPrice"), 228 + i * 10);
-            table.put(record);
+            ProductInfo info = new ProductInfo();
+            info.poiId = 100100;
+            info.productId = 300100 + i;
+            info.productName = "pname" + i;
+            info.sellingPrice = 228 + i * 10;
+            info.date = 20190523 + i;
+            info.customerId = 33;
+            table.put(info);
         }
 
         table.printTable();

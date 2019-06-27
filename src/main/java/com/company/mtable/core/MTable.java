@@ -1,5 +1,6 @@
 package com.company.mtable.core;
 
+import com.company.mtable.core.annotation.MData;
 import com.company.mtable.exception.InvalidPartitionFilterException;
 import com.company.mtable.exception.NoPartitionFilterFoundException;
 import com.company.mtable.schema.Schema;
@@ -38,7 +39,12 @@ public class MTable {
         return bucket.get(schema, filters);
     }
 
-    public void put(Record record) {
+    public void put(Object object) {
+        Record record = schema.toRecord(object);
+        putRecord(record);
+    }
+
+    public void putRecord(Record record) {
         long pval = ((Number) record.get(schema.getPartitionColumn().getCid())).longValue();
 
         Bucket bucket = buckets.computeIfAbsent((short) (pval % NUM_BUCKETS), k -> new SkipListBucket());

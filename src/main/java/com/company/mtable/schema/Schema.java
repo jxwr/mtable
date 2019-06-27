@@ -1,6 +1,7 @@
 package com.company.mtable.schema;
 
 import com.company.mtable.core.IndexValue;
+import com.company.mtable.core.Record;
 import com.company.mtable.core.annotation.MData;
 import com.company.mtable.core.types.DataType;
 import com.company.mtable.core.types.Types;
@@ -17,6 +18,9 @@ public class Schema {
     private Column partitionColumn;
     private Column[] uniqueIndexColumns;
     private int[] uniqueIndexCids;
+
+    // 仅用JavaClass定义Schema时使用
+    private Class<?> recordClass;
 
     public Schema(String tableName) {
         this.tableName = tableName;
@@ -79,6 +83,7 @@ public class Schema {
 
         schema.setUniqueIndexKeys(uniqueIndexFields);
         schema.setPartitionKey(partitionField);
+        schema.setRecordClass(klass);
         return schema;
     }
 
@@ -129,5 +134,32 @@ public class Schema {
 
     public List<Column> getColumns() {
         return columns;
+    }
+
+
+    public Class<?> getRecordClass() {
+        return recordClass;
+    }
+
+    public void setRecordClass(Class<?> recordClass) {
+        this.recordClass = recordClass;
+    }
+
+    public Record toRecord(Object object) {
+        if (object.getClass() != getRecordClass()) {
+            throw new RuntimeException("Schema not match.");
+        }
+
+        try {
+            Record record = Record.newRecord(this);
+            for (Column col : this.getColumns()) {
+                Field field = object.getClass().getDeclaredField(col.getName());
+                Object value = field.get(object);
+                record.set(col, value);
+            }
+            return record;
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            return null;
+        }
     }
 }
