@@ -1,4 +1,4 @@
-// Generated from src/main/java/com/company/mtable/mql/parser/MQL.g4 by ANTLR 4.7.1
+// Generated from src/main/java/com/company/mtable/mql/parser/Mql.g4 by ANTLR 4.7.1
 package com.company.mtable.mql.parser;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class MQLParser extends Parser {
+public class MqlParser extends Parser {
 	static { RuntimeMetaData.checkVersion("4.7.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -91,7 +91,7 @@ public class MQLParser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "MQL.g4"; }
+	public String getGrammarFileName() { return "Mql.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -102,7 +102,7 @@ public class MQLParser extends Parser {
 	@Override
 	public ATN getATN() { return _ATN; }
 
-	public MQLParser(TokenStream input) {
+	public MqlParser(TokenStream input) {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
@@ -533,7 +533,7 @@ public class MQLParser extends Parser {
 	}
 
 	public static class FieldDefinitionContext extends ParserRuleContext {
-		public TerminalNode NAME() { return getToken(MQLParser.NAME, 0); }
+		public TerminalNode NAME() { return getToken(MqlParser.NAME, 0); }
 		public DataTypeContext dataType() {
 			return getRuleContext(DataTypeContext.class,0);
 		}
@@ -569,9 +569,9 @@ public class MQLParser extends Parser {
 	}
 
 	public static class EnumFieldsContext extends ParserRuleContext {
-		public List<TerminalNode> NAME() { return getTokens(MQLParser.NAME); }
+		public List<TerminalNode> NAME() { return getTokens(MqlParser.NAME); }
 		public TerminalNode NAME(int i) {
-			return getToken(MQLParser.NAME, i);
+			return getToken(MqlParser.NAME, i);
 		}
 		public EnumFieldsContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -788,7 +788,7 @@ public class MQLParser extends Parser {
 		public SelectionSetContext selectionSet() {
 			return getRuleContext(SelectionSetContext.class,0);
 		}
-		public TerminalNode NAME() { return getToken(MQLParser.NAME, 0); }
+		public TerminalNode NAME() { return getToken(MqlParser.NAME, 0); }
 		public VariableDefinitionsContext variableDefinitions() {
 			return getRuleContext(VariableDefinitionsContext.class,0);
 		}
@@ -856,8 +856,8 @@ public class MQLParser extends Parser {
 	}
 
 	public static class OperationTypeContext extends ParserRuleContext {
-		public TerminalNode QUERY() { return getToken(MQLParser.QUERY, 0); }
-		public TerminalNode MUTATION() { return getToken(MQLParser.MUTATION, 0); }
+		public TerminalNode QUERY() { return getToken(MqlParser.QUERY, 0); }
+		public TerminalNode MUTATION() { return getToken(MqlParser.MUTATION, 0); }
 		public OperationTypeContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1047,7 +1047,7 @@ public class MQLParser extends Parser {
 	}
 
 	public static class VariableContext extends ParserRuleContext {
-		public TerminalNode NAME() { return getToken(MQLParser.NAME, 0); }
+		public TerminalNode NAME() { return getToken(MqlParser.NAME, 0); }
 		public VariableContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1145,7 +1145,7 @@ public class MQLParser extends Parser {
 	}
 
 	public static class NamedTypeContext extends ParserRuleContext {
-		public TerminalNode NAME() { return getToken(MQLParser.NAME, 0); }
+		public TerminalNode NAME() { return getToken(MqlParser.NAME, 0); }
 		public NamedTypeContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1399,7 +1399,7 @@ public class MQLParser extends Parser {
 	}
 
 	public static class FieldContext extends ParserRuleContext {
-		public TerminalNode NAME() { return getToken(MQLParser.NAME, 0); }
+		public TerminalNode NAME() { return getToken(MqlParser.NAME, 0); }
 		public AliasContext alias() {
 			return getRuleContext(AliasContext.class,0);
 		}
@@ -1481,7 +1481,7 @@ public class MQLParser extends Parser {
 	}
 
 	public static class AliasContext extends ParserRuleContext {
-		public TerminalNode NAME() { return getToken(MQLParser.NAME, 0); }
+		public TerminalNode NAME() { return getToken(MqlParser.NAME, 0); }
 		public AliasContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1676,7 +1676,7 @@ public class MQLParser extends Parser {
 	}
 
 	public static class FragmentNameContext extends ParserRuleContext {
-		public TerminalNode NAME() { return getToken(MQLParser.NAME, 0); }
+		public TerminalNode NAME() { return getToken(MqlParser.NAME, 0); }
 		public FragmentNameContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1804,7 +1804,7 @@ public class MQLParser extends Parser {
 	}
 
 	public static class DirectiveContext extends ParserRuleContext {
-		public TerminalNode NAME() { return getToken(MQLParser.NAME, 0); }
+		public TerminalNode NAME() { return getToken(MqlParser.NAME, 0); }
 		public ArgumentsContext arguments() {
 			return getRuleContext(ArgumentsContext.class,0);
 		}
@@ -1916,7 +1916,7 @@ public class MQLParser extends Parser {
 	}
 
 	public static class ArgumentContext extends ParserRuleContext {
-		public TerminalNode NAME() { return getToken(MQLParser.NAME, 0); }
+		public TerminalNode NAME() { return getToken(MqlParser.NAME, 0); }
 		public ValueContext value() {
 			return getRuleContext(ValueContext.class,0);
 		}
@@ -1955,11 +1955,11 @@ public class MQLParser extends Parser {
 		public VariableContext variable() {
 			return getRuleContext(VariableContext.class,0);
 		}
-		public TerminalNode FLOAT() { return getToken(MQLParser.FLOAT, 0); }
-		public TerminalNode INT() { return getToken(MQLParser.INT, 0); }
-		public TerminalNode STRING() { return getToken(MQLParser.STRING, 0); }
-		public TerminalNode BOOLEAN() { return getToken(MQLParser.BOOLEAN, 0); }
-		public TerminalNode NULL() { return getToken(MQLParser.NULL, 0); }
+		public TerminalNode FLOAT() { return getToken(MqlParser.FLOAT, 0); }
+		public TerminalNode INT() { return getToken(MqlParser.INT, 0); }
+		public TerminalNode STRING() { return getToken(MqlParser.STRING, 0); }
+		public TerminalNode BOOLEAN() { return getToken(MqlParser.BOOLEAN, 0); }
+		public TerminalNode NULL() { return getToken(MqlParser.NULL, 0); }
 		public EnumValueContext enumValue() {
 			return getRuleContext(EnumValueContext.class,0);
 		}
@@ -2061,7 +2061,7 @@ public class MQLParser extends Parser {
 	}
 
 	public static class EnumValueContext extends ParserRuleContext {
-		public TerminalNode NAME() { return getToken(MQLParser.NAME, 0); }
+		public TerminalNode NAME() { return getToken(MqlParser.NAME, 0); }
 		public EnumValueContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}

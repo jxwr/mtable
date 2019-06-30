@@ -1,4 +1,4 @@
-grammar MQL;
+grammar Mql;
 
 schema
     : (typeDefinition | inputTypeDefinition | enumDefinition | interfaceDefinition | unionDefinition)+

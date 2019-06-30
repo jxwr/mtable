@@ -1,4 +1,4 @@
-// Generated from src/main/java/com/company/mtable/mql/parser/MQL.g4 by ANTLR 4.7.1
+// Generated from src/main/java/com/company/mtable/mql/parser/Mql.g4 by ANTLR 4.7.1
 package com.company.mtable.mql.parser;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
@@ -10,7 +10,7 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class MQLLexer extends Lexer {
+public class MqlLexer extends Lexer {
 	static { RuntimeMetaData.checkVersion("4.7.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -83,13 +83,13 @@ public class MQLLexer extends Lexer {
 	}
 
 
-	public MQLLexer(CharStream input) {
+	public MqlLexer(CharStream input) {
 		super(input);
 		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
 	@Override
-	public String getGrammarFileName() { return "MQL.g4"; }
+	public String getGrammarFileName() { return "Mql.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
