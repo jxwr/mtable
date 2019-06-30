@@ -100,7 +100,7 @@ nonNullListType
     ;
 
 selectionSet
-    : '{' selection (','* selection)* '}'
+    : '{' selection (','* selection)* '}' { System.out.println("selectionSet"); }
     ;
 
 selection
@@ -108,7 +108,10 @@ selection
     ;
 
 field
-    : alias? NAME arguments? directives? selectionSet?
+    : alias? NAME { System.out.println($NAME);  }
+      arguments?
+      directives?
+      selectionSet?
     ;
 
 alias
