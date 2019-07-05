@@ -11,9 +11,12 @@
   - 在线代码编译类型问题没解决，加载Jar包OK 
 * bucket支持一个range, 避免太多map ✔ 
   - 支持动态数据分配
-* graphql / mql
 * API简化，使用优化
 * ORM，创建Schema，插入Record
+
+##### MQL
+* parser, ast
+* 默认resolver，到mtable，到DB，到RPC
 
 ##### 升级功能
 * multi index
