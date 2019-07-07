@@ -1,6 +1,8 @@
 *~
 out/
 *.iml
+*.tokens
+*.interp
 .idea/
 *.class
 antlr-4.7.1-complete.jar
