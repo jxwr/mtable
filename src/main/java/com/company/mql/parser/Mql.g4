@@ -1,5 +1,22 @@
 grammar Mql;
 
+@parser::header
+{
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import com.company.mql.ast.*;
+}
+
+@parser::members
+{
+private AstFactory factory = new AstFactory();
+
+public Document getDocument() {
+    return factory.getDocument();
+}
+}
+
 schema
     : (typeDefinition | inputTypeDefinition | enumDefinition | interfaceDefinition | unionDefinition)+
     ;
@@ -44,15 +61,19 @@ enumFields
 /* Query document rules */
 
 document
-    : definition+
+    :(
+       definition { factory.addDefinition($definition.result); }
+     )+
     ;
 
-definition
-    : operationDefinition | fragmentDefinition
+definition returns [Definition result]
+    : operationDefinition { $result = $operationDefinition.result; }
+    | fragmentDefinition { $result = null; }
     ;
 
-operationDefinition
-    : selectionSet | namedOperationDefinition
+operationDefinition returns [Definition result]
+    : selectionSet { $result = factory.createOperationDefinition($selectionSet.result); }
+    | namedOperationDefinition
     ;
 
 namedOperationDefinition
@@ -99,19 +120,27 @@ nonNullListType
     : listType '!'
     ;
 
-selectionSet
-    : '{' selection (','* selection)* '}' { System.out.println("selectionSet"); }
+selectionSet returns [SelectionSet result]
+    : '{' { SelectionSet selectionSet = factory.createSelectionSet(); }
+      selection { selectionSet.addSelection($selection.result); }
+      (','*
+      selection { selectionSet.addSelection($selection.result); }
+      )*
+      '}' { $result = selectionSet; }
     ;
 
-selection
-    : field | fragmentSpread | inlineFragment
+selection returns [Selection result]
+    : field { $result = $field.result; }
+    | fragmentSpread { $result = null; }
+    | inlineFragment { $result = null; }
     ;
 
-field
-    : alias? NAME { System.out.println($NAME);  }
+field returns [Field result]
+    : alias? NAME { System.out.println($NAME); Field field = factory.createField($NAME); }
       arguments?
       directives?
-      selectionSet?
+      (selectionSet { field.setSelectionSeet($selectionSet.result); })?
+      { $result = field; }
     ;
 
 alias

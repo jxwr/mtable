@@ -6,5 +6,5 @@ if [ "$1" == "-d" ]; then
 fi
 
 java -cp antlr-4.7.1-complete.jar org.antlr.v4.Tool \
-     -package com.company.mtable.mql.parser \
-     -no-listener src/main/java/com/company/mtable/mql/parser/Mql.g4
+     -package com.company.mql.parser \
+     -no-listener src/main/java/com/company/mql/parser/Mql.g4

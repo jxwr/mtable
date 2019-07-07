@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by jxwr on 2019/7/7.
  */
-public class Field {
+public class FieldDefinition {
 
     private final String name;
     private final List<Argument> args;
@@ -13,7 +13,7 @@ public class Field {
     private final boolean required;
     private DataFetcher dataFetcher;
 
-    public Field(String name, List<Argument> args, Type type, boolean required) {
+    public FieldDefinition(String name, List<Argument> args, Type type, boolean required) {
         this.name = name;
         this.args = args;
         this.type = type;

@@ -9,13 +9,13 @@ import java.util.Map;
 public class ObjectType implements Type {
 
     private final String name;
-    private Map<String, Field> fieldsByName = new HashMap<>();
+    private Map<String, FieldDefinition> fieldsByName = new HashMap<>();
 
     public ObjectType(String name) {
         this.name = name;
     }
 
-    public ObjectType addField(Field field) {
+    public ObjectType addField(FieldDefinition field) {
         fieldsByName.put(field.getName(), field);
         return this;
     }
@@ -25,7 +25,7 @@ public class ObjectType implements Type {
         return this.name;
     }
 
-    Field getField(String name) {
+    FieldDefinition getField(String name) {
         return fieldsByName.get(name);
     }
 }
