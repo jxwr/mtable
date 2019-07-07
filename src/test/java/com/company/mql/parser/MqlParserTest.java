@@ -1,4 +1,4 @@
-package com.company.mtable.mql.parser;
+package com.company.mql.parser;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -6,8 +6,6 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by jxwr on 2019/7/1.

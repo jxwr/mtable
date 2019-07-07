@@ -12,8 +12,8 @@ import java.util.*;
 public class Schema {
 
     private String tableName;
-    private Map<Integer, Column> columnIdMap = new HashMap<>();
-    private Map<String, Column> columnNameMap = new HashMap<>();
+    private Map<Integer, Column> columnById = new HashMap<>();
+    private Map<String, Column> columnByName = new HashMap<>();
     private List<Column> columns = new ArrayList<>();
     private Column partitionColumn;
     private Column[] uniqueIndexColumns;
@@ -31,8 +31,8 @@ public class Schema {
             throw new RuntimeException("Column type is not concrete");
 
         Column col = new Column(columns.size(), name, type);
-        columnIdMap.put(columns.size(), col);
-        columnNameMap.put(name, col);
+        columnById.put(columns.size(), col);
+        columnByName.put(name, col);
         columns.add(col);
         return this;
     }
@@ -42,7 +42,7 @@ public class Schema {
     }
 
     public Schema setPartitionKey(String partitionKey) {
-        this.partitionColumn = columnNameMap.get(partitionKey);
+        this.partitionColumn = columnByName.get(partitionKey);
         return this;
     }
 
@@ -102,7 +102,7 @@ public class Schema {
 
         for (int i = 0; i < count; i++) {
             String key = uniqueIndexKeys.get(i);
-            Column col = columnNameMap.get(key);
+            Column col = columnByName.get(key);
             uniqueIndexColumns[i] = col;
             uniqueIndexCids[i] = col.getCid();
         }
@@ -113,15 +113,15 @@ public class Schema {
     }
 
     public int cid(String name) {
-        return columnNameMap.get(name).getCid();
+        return columnByName.get(name).getCid();
     }
 
     public Column column(int cid) {
-        return columnIdMap.get(cid);
+        return columnById.get(cid);
     }
 
     public Column column(String cname) {
-        return columnNameMap.get(cname);
+        return columnByName.get(cname);
     }
 
     public String getTableName() {
