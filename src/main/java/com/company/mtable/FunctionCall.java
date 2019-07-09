@@ -17,6 +17,9 @@ import java.util.stream.Collectors;
  */
 public class FunctionCall implements Selection {
 
+    // magic
+    public static final String PARAM_RECORD = "FUNC_PARAM_RECORD";
+
     private FunctionInfo funcInfo;
 
     private List<Object> params;
@@ -63,52 +66,70 @@ public class FunctionCall implements Selection {
         return this.funcInfo.dataType();
     }
 
+    /**
+     * 比较trick，函数的参数有两类，一类是值，一类是列
+     * 值就直接替换，列每次扫表需要从record中取出设置
+     * @param aggregateQuery
+     * @return
+     */
     @Override
     public SelectionHandler getHandler(boolean aggregateQuery) {
         List<Integer> idxs = new ArrayList<>();
         List<Column> cols = new ArrayList<>();
         Object[] paramValues = new Object[params.size()];
 
+        int recordParamIndex = -1;
+
         for (int i = 0; i < params.size(); i++) {
             Object obj = params.get(i);
             if (obj instanceof Column) {
                 idxs.add(i);
                 cols.add((Column) obj);
+            } else if (obj == PARAM_RECORD) {
+                paramValues[i] = obj;
+                recordParamIndex = i;
             } else {
                 paramValues[i] = funcInfo.inputTypes().get(i).value(obj);
             }
         }
 
         if (aggregateQuery) {
-            return new AggregateFunctionHandler(funcInfo.func(), paramValues, idxs, cols);
+            return new AggregateFunctionHandler(funcInfo.func(), paramValues, idxs, cols, recordParamIndex);
         } else {
-            return new SimpleFunctionHandler(funcInfo.func(), paramValues, idxs, cols);
+            return new SimpleFunctionHandler(funcInfo.func(), paramValues, idxs, cols, recordParamIndex);
         }
     }
 
     private class SimpleFunctionHandler implements SelectionHandler {
 
-        private Object[] params;
+        private final Object[] params;
 
-        private List<Integer> idxs;
+        private final List<Integer> idxs;
 
-        private List<Column> cols;
+        private final int recordParamIndex;
 
-        private Object func;
+        private final List<Column> cols;
 
-        public SimpleFunctionHandler(Object func, Object[] params, List<Integer> idxs, List<Column> cols) {
+        private final Object func;
+
+        public SimpleFunctionHandler(Object func, Object[] params, List<Integer> idxs, List<Column> cols, int recordParamIndex) {
             this.func = func;
             this.params = params;
             this.cols = cols;
             this.idxs = idxs;
+            this.recordParamIndex = recordParamIndex;
         }
 
         @Override
         @SuppressWarnings("unchecked")
         public Object handle(Record record) throws Exception {
-            for (Integer i : idxs) {
+            for (int i = 0; i < idxs.size(); i++) {
                 Column col = cols.get(i);
-                params[i] = record.get(col);
+                params[idxs.get(i)] = record.get(col);
+            }
+
+            if (recordParamIndex >= 0) {
+                params[recordParamIndex] = record;
             }
 
             switch (params.length) {
@@ -137,28 +158,36 @@ public class FunctionCall implements Selection {
 
     private class AggregateFunctionHandler implements SelectionHandler {
 
-        private Object[] params;
+        private final Object[] params;
 
-        private List<Integer> idxs;
+        private final List<Integer> idxs;
 
-        private List<Column> cols;
+        private final int recordParamIndex;
 
-        private Object func;
+        private final List<Column> cols;
 
-        public AggregateFunctionHandler(Object func, Object[] params, List<Integer> idxs, List<Column> cols) {
+        private final Object func;
+
+        public AggregateFunctionHandler(Object func, Object[] params, List<Integer> idxs, List<Column> cols, int recordParamIndex) {
             this.func = func;
             this.params = params;
             this.cols = cols;
             this.idxs = idxs;
+            this.recordParamIndex = recordParamIndex;
         }
 
         @Override
         @SuppressWarnings("unchecked")
         public Object handle(Record record) throws Exception {
-            for (Integer i : idxs) {
+            for (int i = 0; i < idxs.size(); i++) {
                 Column col = cols.get(i);
-                params[i] = record.get(col);
+                params[idxs.get(i)] = record.get(col);
             }
+
+            if (recordParamIndex >= 0) {
+                params[recordParamIndex] = record;
+            }
+
             switch (params.length) {
                 case 0:
                     ((AFn0) func).handle();

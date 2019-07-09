@@ -1,4 +1,4 @@
-package com.company.mtable.core.functions;
+package com.company.mtable.functions;
 
 import com.company.mtable.core.ifn.Fn2;
 

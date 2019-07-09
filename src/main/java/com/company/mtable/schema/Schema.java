@@ -47,7 +47,7 @@ public class Schema {
     }
 
     /**
-     * TODO: 抛异常
+     * TODO: 正经抛异常
      * @param tableName
      * @param klass
      * @return

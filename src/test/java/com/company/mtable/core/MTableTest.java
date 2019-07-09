@@ -224,7 +224,6 @@ public class MTableTest {
         resultSet.printTable();
 
         assertEquals(resultSet.resultSize(), 16);
-
         for (int i = 0; i < resultSet.resultSize(); i++) {
             ImmutableRecord record = resultSet.resultRecords().get(i);
             assertTrue(record.getInt(3) < 20190530);
@@ -260,6 +259,34 @@ public class MTableTest {
         querier.getResultSet().printTable();
 
         assertEquals(querier.getResultSet().resultSize(), 16);
+    }
+
+    @Test
+    public void testFuncRecordParam() throws Exception {
+        MTable table = mkTableRealData();
+        table.printTable();
+
+        FunctionRegistry.register("get_id", UDFRecordId.class);
+
+        Querier querier = table.newQuerier();
+
+        querier.addSelection("get_id", Arrays.asList(FunctionCall.PARAM_RECORD, 0), "poi_id");
+
+        int dateCid = schema.cid("date");
+        querier.addFilter(schema.getPartitionColumn().getCid(), OpType.EQ, 100100);
+        querier.addFilter(dateCid, OpType.GT, 20190525);
+        querier.addFilter(dateCid, OpType.LT, 20190530);
+
+        table.scan(querier);
+
+        ResultSet resultSet = querier.getResultSet();
+        resultSet.printTable();
+
+        assertEquals(resultSet.resultSize(), 16);
+        for (int i = 0; i < resultSet.resultSize(); i++) {
+            ImmutableRecord record = resultSet.resultRecords().get(i);
+            assertTrue(record.getInt(0) == 100100);
+        }
     }
 
     @Test

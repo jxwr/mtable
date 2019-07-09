@@ -1,7 +1,7 @@
 package com.company.mtable;
 
 import com.company.mtable.core.Compiler;
-import com.company.mtable.core.functions.*;
+import com.company.mtable.functions.*;
 import com.company.mtable.core.ifn.*;
 import com.company.mtable.exception.UDFCompileException;
 

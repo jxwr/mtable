@@ -1,5 +1,6 @@
 package com.company.mtable.core;
 
+import com.company.mtable.FunctionCall;
 import com.company.mtable.core.types.DataType;
 
 /**

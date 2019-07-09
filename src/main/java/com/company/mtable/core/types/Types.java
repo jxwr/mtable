@@ -1,5 +1,7 @@
 package com.company.mtable.core.types;
 
+import com.company.mtable.core.Record;
+
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -30,6 +32,8 @@ public interface Types {
 
     DataType TimestampType = new TimestampType();
 
+    DataType RecordType = new RecordType();
+
     static DataType fromJavaType(Class<?> klass) {
         if (klass == Integer.class || klass == Integer.TYPE) {
             return IntegerType;
@@ -45,6 +49,8 @@ public interface Types {
             return NumberType;
         } else if (klass == String.class) {
             return StringType;
+        } else if (klass == Record.class) {
+            return RecordType;
         } else if (klass == Date.class) {
             return DateType;
         } else if (klass == Timestamp.class) {
@@ -70,6 +76,8 @@ public interface Types {
             return 'B';
         } else if (dataType == Types.StringType) {
             return 'S';
+        } else if (dataType == Types.RecordType) {
+            return 'R';
         } else if (dataType == Types.DateType) {
             return 'D';
         } else if (dataType == Types.AnyType) {

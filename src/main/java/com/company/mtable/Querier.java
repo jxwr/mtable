@@ -47,6 +47,13 @@ public class Querier implements Scanner {
         this.addSelection(col, as);
     }
 
+    public void addSelectionsById(List<Integer> cids, String as) {
+        for (int cid : cids) {
+            Column col = schema.column(cid);
+            this.addSelection(col, as);
+        }
+    }
+
     /**
      * ProjectionSelection
      * @param columnName
@@ -55,6 +62,13 @@ public class Querier implements Scanner {
     public void addSelection(String columnName, String as) {
         Column col = schema.column(columnName);
         this.addSelection(col, as);
+    }
+
+    public void addSelectionsByName(List<String> columnNames, String as) {
+        for (String columnName : columnNames) {
+            Column col = schema.column(columnName);
+            this.addSelection(col, as);
+        }
     }
 
     /**

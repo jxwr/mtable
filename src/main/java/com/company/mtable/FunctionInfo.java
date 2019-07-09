@@ -5,6 +5,7 @@ import com.company.mtable.core.types.Types;
 import com.company.mtable.schema.Column;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,11 +56,15 @@ public class FunctionInfo {
         return null;
     }
 
+    /**
+     * 不太灵，很多类型直接传成了Object，即变成AnyType了
+     * @param funcClass
+     * @return
+     */
     private static List<DataType> getInputTypes(Class funcClass) {
         List<DataType> types = new ArrayList<>();
         Method[] methods = funcClass.getMethods();
         for (Method method : methods) {
-            System.out.println(funcClass.getName() + " ==> " + method.getName());
             if (method.getName().equals("call") || method.getName().equals("handle")) {
                 Class<?>[] typeClasses = method.getParameterTypes();
                 for (int i = 0; i < typeClasses.length; i++) {
@@ -78,6 +83,8 @@ public class FunctionInfo {
             DataType type;
             if (param instanceof Column) {
                 type = ((Column) param).getType();
+            } else if (param == FunctionCall.PARAM_RECORD) {
+                type = Types.RecordType;
             } else {
                 type = Types.fromJavaType(param.getClass());
             }
@@ -101,17 +108,19 @@ public class FunctionInfo {
     public String checkInputTypes(List<Object> params) {
         for (int i = 0; i < this.inputTypes.size(); i++) {
             Object param = params.get(i);
+            DataType leftType = null;
             DataType rightType = this.inputTypes.get(i);
+
             if (param instanceof Column) {
-                DataType leftType = ((Column) param).getType();
-                if (!rightType.acceptsType(leftType)) {
-                    return makeErrorMessage(i, leftType, rightType);
-                }
+                leftType = ((Column) param).getType();
+            } else if (param == FunctionCall.PARAM_RECORD) {
+                leftType = Types.RecordType;
             } else {
-                DataType leftType = Types.fromJavaType(param.getClass());
-                if (!rightType.acceptsType(leftType)) {
-                    return makeErrorMessage(i, leftType, rightType);
-                }
+                leftType = Types.fromJavaType(param.getClass());
+            }
+            System.out.println("==>" + leftType + " ---> " + rightType);
+            if (!rightType.acceptsType(leftType)) {
+                return makeErrorMessage(i, leftType, rightType);
             }
         }
         return null;
