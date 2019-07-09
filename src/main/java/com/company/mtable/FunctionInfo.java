@@ -1,4 +1,4 @@
-package com.company.mtable.core;
+package com.company.mtable;
 
 import com.company.mtable.core.types.DataType;
 import com.company.mtable.core.types.Types;

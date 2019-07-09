@@ -1,6 +1,6 @@
-package com.company.mtable.core;
+package com.company.mtable;
 
-import com.company.mtable.core.annotation.MData;
+import com.company.mtable.core.*;
 import com.company.mtable.exception.InvalidPartitionFilterException;
 import com.company.mtable.exception.NoPartitionFilterFoundException;
 import com.company.mtable.schema.Schema;

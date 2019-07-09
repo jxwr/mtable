@@ -1,5 +1,6 @@
-package com.company.mtable.core;
+package com.company.mtable;
 
+import com.company.mtable.core.ImmutableRecord;
 import com.company.mtable.core.types.Types;
 import com.company.mtable.schema.Column;
 

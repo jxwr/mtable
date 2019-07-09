@@ -1,4 +1,4 @@
-package com.company.mtable.core.scanners;
+package com.company.mtable.scanners;
 
 import com.company.mtable.core.Filter;
 import com.company.mtable.core.OpType;

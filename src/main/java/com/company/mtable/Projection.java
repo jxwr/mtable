@@ -1,5 +1,8 @@
-package com.company.mtable.core;
+package com.company.mtable;
 
+import com.company.mtable.core.Record;
+import com.company.mtable.core.Selection;
+import com.company.mtable.core.SelectionHandler;
 import com.company.mtable.core.types.DataType;
 import com.company.mtable.schema.Column;
 

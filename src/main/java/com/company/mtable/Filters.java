@@ -1,5 +1,9 @@
-package com.company.mtable.core;
+package com.company.mtable;
 
+import com.company.mtable.core.Filter;
+import com.company.mtable.core.IndexValue;
+import com.company.mtable.core.OpType;
+import com.company.mtable.core.Record;
 import com.company.mtable.core.types.DataType;
 import com.company.mtable.core.types.NumberType;
 import com.company.mtable.exception.InvalidPartitionFilterException;

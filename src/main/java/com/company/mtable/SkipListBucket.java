@@ -1,6 +1,7 @@
-package com.company.mtable.core;
+package com.company.mtable;
 
-import com.company.mtable.core.scanners.TablePrinter;
+import com.company.mtable.core.*;
+import com.company.mtable.scanners.*;
 import com.company.mtable.exception.InvalidPartitionFilterException;
 import com.company.mtable.schema.Schema;
 
@@ -140,7 +141,7 @@ public class SkipListBucket implements Bucket {
     }
 
     @Override
-    public void scan(Schema schema, List<Filter> filters, Scanner scanner) throws Exception {
+    public void scan(Schema schema, List<Filter> filters, com.company.mtable.core.Scanner scanner) throws Exception {
         IndexValue lower = Filters.getLowestPrefix(schema, filters);
         IndexValue upper = Filters.getUpperPrefix(schema, filters);
 
