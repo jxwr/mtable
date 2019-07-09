@@ -26,9 +26,8 @@
 * lru / record evict
 
 ##### 优化
-* ResultRow和Record合并
-* 全字段取FullProjection，短路处理，避免对象创建，Record对应的Immutable版本，可以是个接口？
+* ResultRow和Record合并 ✔ 
+* 全字段取FullProjection，短路处理，避免对象创建，Record对应的Immutable版本，可以是个接口？ ✔
+* 全字段函数
 * 并发控制
 * 性能优化
-
-

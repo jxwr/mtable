@@ -163,6 +163,8 @@ public class MTableTest {
         querier.addFilter(dateCid, OpType.GT, 20190525);
         querier.addFilter(dateCid, OpType.LT, 20190530);
 
+        table.scan(querier);
+
         querier.getResultSet().columns().forEach(c -> System.out.println(c.getType()));
 
         List<ImmutableRecord> resultRows = querier.getResultSet().resultRecords();
@@ -195,6 +197,8 @@ public class MTableTest {
         querier.addFilter(schema.getPartitionColumn().getCid(), OpType.EQ, 100100);
         querier.addFilter(dateCid, OpType.GT, 20190525);
         querier.addFilter(dateCid, OpType.LT, 20190530);
+
+        table.scan(querier);
 
         List<ImmutableRecord> resultRows = querier.getResultSet().resultRecords();
 
