@@ -1,6 +1,5 @@
 package com.company.mtable.core;
 
-import com.company.mtable.core.*;
 import com.company.mtable.schema.Column;
 import com.company.mtable.schema.Schema;
 import org.junit.Before;
@@ -253,8 +252,8 @@ public class BucketTest {
 
         bucket.scan(schema, Collections.emptyList(), querier);
 
-        List<ResultRow> resultRows = querier.getResultSet().resultRows();
-        ResultRow resultRow = resultRows.get(0);
+        List<ImmutableRecord> resultRows = querier.getResultSet().resultRecords();
+        ImmutableRecord resultRow = resultRows.get(0);
         assertEquals(resultRow.get(0), 55L);
         assertEquals(resultRow.get(1), 10);
         assertEquals(resultRow.get(2), 1116L);
@@ -340,9 +339,9 @@ public class BucketTest {
                 new Filter(dateCid, OpType.LT, 20190530)
         ), querier);
 
-        List<ResultRow> resultRows = querier.getResultSet().resultRows();
+        List<ImmutableRecord> resultRows = querier.getResultSet().resultRecords();
 
-        ResultRow resultRow = resultRows.get(0);
+        ImmutableRecord resultRow = resultRows.get(0);
         assertEquals(resultRow.get(0), 300100);
         assertEquals(resultRow.get(1), 4);
         assertEquals(resultRow.get(2), 273L);

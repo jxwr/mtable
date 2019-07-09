@@ -11,6 +11,7 @@ import java.util.List;
 
 import static com.company.mtable.core.types.Types.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by jxwr on 2019/6/21.
@@ -164,9 +165,9 @@ public class MTableTest {
 
         querier.getResultSet().columns().forEach(c -> System.out.println(c.getType()));
 
-        List<ResultRow> resultRows = querier.getResultSet().resultRows();
+        List<ImmutableRecord> resultRows = querier.getResultSet().resultRecords();
 
-        ResultRow resultRow = resultRows.get(0);
+        ImmutableRecord resultRow = resultRows.get(0);
         assertEquals(resultRow.get(0), 300100);
         assertEquals(resultRow.get(1), 4);
         assertEquals(resultRow.get(2), 273L);
@@ -195,11 +196,36 @@ public class MTableTest {
         querier.addFilter(dateCid, OpType.GT, 20190525);
         querier.addFilter(dateCid, OpType.LT, 20190530);
 
-        List<ResultRow> resultRows = querier.getResultSet().resultRows();
+        List<ImmutableRecord> resultRows = querier.getResultSet().resultRecords();
 
-        ResultRow resultRow = resultRows.get(0);
+        ImmutableRecord resultRow = resultRows.get(0);
 
         querier.getResultSet().printTable();
+    }
+
+    @Test
+    public void testFastPath() throws Exception {
+        MTable table = mkTableRealData();
+        table.printTable();
+
+        Querier querier = table.newQuerier();
+
+        querier.addFilter("poi_id", OpType.EQ, 100100);
+        querier.addFilter("date", OpType.GT, 20190525);
+        querier.addFilter("date", OpType.LT, 20190530);
+
+        table.scan(querier);
+        ResultSet resultSet = querier.getResultSet();
+        resultSet.printTable();
+
+        assertEquals(resultSet.resultSize(), 16);
+
+        for (int i = 0; i < resultSet.resultSize(); i++) {
+            ImmutableRecord record = resultSet.resultRecords().get(i);
+            assertTrue(record.getInt(3) < 20190530);
+            assertTrue(record.getInt(3) > 20190525);
+            assertTrue(record.getInt(0) == 100100);
+        }
     }
 
     @Test
@@ -221,12 +247,14 @@ public class MTableTest {
         querier.addSelection("udf_add", Arrays.asList(dateCol, 1000000000), null);
 
         int dateCid = schema.cid("date");
-        querier.addFilter(new Filter(schema.getPartitionColumn().getCid(), OpType.EQ, 100100));
-        querier.addFilter(new Filter(dateCid, OpType.GT, 20190525));
-        querier.addFilter(new Filter(dateCid, OpType.LT, 20190530));
+        querier.addFilter(schema.getPartitionColumn().getCid(), OpType.EQ, 100100);
+        querier.addFilter(dateCid, OpType.GT, 20190525);
+        querier.addFilter(dateCid, OpType.LT, 20190530);
 
         table.scan(querier);
         querier.getResultSet().printTable();
+
+        assertEquals(querier.getResultSet().resultSize(), 16);
     }
 
     @Test

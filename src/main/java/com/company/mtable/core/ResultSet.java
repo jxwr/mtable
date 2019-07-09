@@ -12,28 +12,38 @@ import java.util.List;
 public class ResultSet {
 
     private List<Column> columns;
-    private List<ResultRow> resultRows;
+    private List<ImmutableRecord> resultRecords;
     private boolean firstline = true;
 
     public ResultSet() {
-        this.columns = new ArrayList<>();
-        this.resultRows = new ArrayList<>();
+        this.resultRecords = new ArrayList<>();
     }
 
     public List<Column> columns() {
         return columns;
     }
 
-    public void addColumns(Column column) {
+    public void addColumn(Column column) {
+        if (this.columns == null) {
+            this.columns = new ArrayList<>();
+        }
         this.columns.add(column);
     }
 
-    public void addResultRow(ResultRow resultRow) {
-        this.resultRows.add(resultRow);
+    public void setColumns(List<Column> columns) {
+        this.columns = columns;
     }
 
-    public List<ResultRow> resultRows() {
-        return resultRows;
+    public void addResultRecord(ImmutableRecord resultRow) {
+        this.resultRecords.add(resultRow);
+    }
+
+    public List<ImmutableRecord> resultRecords() {
+        return resultRecords;
+    }
+
+    public int resultSize() {
+        return resultRecords.size();
     }
 
     private int minRowLen(Column c) {
@@ -43,12 +53,12 @@ public class ResultSet {
 
     public void printTable() {
         System.out.println("Results:");
-        for (ResultRow row : resultRows()) {
-            printRow(row);
+        for (ImmutableRecord row : resultRecords()) {
+            printRecord(row);
         }
     }
 
-    public void printRow(ResultRow row) {
+    public void printRecord(ImmutableRecord row) {
         if (row == null) return;
 
         List<Column> cs = columns();

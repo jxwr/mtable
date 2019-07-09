@@ -4,8 +4,8 @@ import com.company.mtable.core.types.DataType;
 
 public class Column {
 
-    private int cid;
-    private String name;
+    private final int cid;
+    private final String name;
     private DataType type;
 
     public Column(int cid, String name, DataType type) {
@@ -18,16 +18,8 @@ public class Column {
         return cid;
     }
 
-    public void setCid(int cid) {
-        this.cid = cid;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public DataType getType() {

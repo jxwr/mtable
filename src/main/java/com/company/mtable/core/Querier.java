@@ -88,13 +88,22 @@ public class Querier implements Scanner {
         this.groupBy = groupBy;
     }
 
+    private boolean isFullProjection() {
+        return selections.size() == 0;
+    }
+
     @Override
     public void init(Schema schema) {
-        for (int i = 0; i < selections.size(); i++) {
-            Selection selection = selections.get(i);
+        if (isFullProjection()) {
+            resultSet.setColumns(schema.getColumns());
+        } else {
+            for (int i = 0; i < selections.size(); i++) {
+                Selection selection = selections.get(i);
 
-            resultSet.addColumns(new Column(i, selection.name(), selection.dataType()));
+                resultSet.addColumn(new Column(i, selection.name(), selection.dataType()));
+            }
         }
+
         handlersGroup = new HashMap<>();
 
         // TODO: more check
@@ -122,16 +131,21 @@ public class Querier implements Scanner {
                 handler.handle(record);
             }
         } else {
-            ResultRow row = new ResultRow(selections.size());
-            List<SelectionHandler> handlers = initializeHandlers();
+            if (isFullProjection()) {
+                // 短路操作，直接复用Record，可能会有并发更新问题
+                resultSet.addResultRecord(record);
+            } else {
+                Record resultRecord = new Record(selections.size());
+                List<SelectionHandler> handlers = initializeHandlers();
 
-            for (int i = 0; i < handlers.size(); i++) {
-                SelectionHandler handler = handlers.get(i);
-                Object val = handler.handle(record);
-                row.set(i, val);
+                for (int i = 0; i < handlers.size(); i++) {
+                    SelectionHandler handler = handlers.get(i);
+                    Object val = handler.handle(record);
+                    resultRecord.set(i, val);
+                }
+
+                resultSet.addResultRecord(resultRecord);
             }
-
-            resultSet.addResultRow(row);
         }
         return true;
     }
@@ -139,19 +153,19 @@ public class Querier implements Scanner {
     @Override
     public void finish(Schema schema) throws Exception {
         for (List<SelectionHandler> handlers : handlersGroup.values()) {
-            ResultRow resultRow = new ResultRow(handlers.size());
+            Record resultRow = new Record(handlers.size());
             for (int i = 0; i < handlers.size(); i++) {
                 resultRow.set(i, handlers.get(i).finish());
             }
-            resultSet.addResultRow(resultRow);
+            resultSet.addResultRecord(resultRow);
         }
 
         // fix column types, anything but object
-        if (resultSet.resultRows().size() > 0) {
+        if (resultSet.resultRecords().size() > 0) {
             for (int i = 0; i < resultSet.columns().size(); i++) {
                 Column col = resultSet.columns().get(i);
                 if (col.getType() == Types.AnyType) {
-                    col.setType(Types.fromJavaType(resultSet.resultRows().get(0).get(i).getClass()));
+                    col.setType(Types.fromJavaType(resultSet.resultRecords().get(0).get(i).getClass()));
                 }
             }
         }
