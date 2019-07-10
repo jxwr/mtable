@@ -1,4 +1,7 @@
-package com.company.mql;
+package com.company.mql.types;
+
+import com.company.mql.FieldDefinition;
+import com.company.mql.Type;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,5 +1,7 @@
 package com.company.mql;
 
+import com.company.mql.types.ObjectType;
+
 /**
  * Created by jxwr on 2019/7/5.
  */

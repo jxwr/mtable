@@ -1,9 +1,13 @@
 {
-  hero {
+  prouduct {
     name
-    # Queries can have comments!
     friends {
       name
+    }
+    age
+    ext {
+      money
+      balance
     }
   }
 }

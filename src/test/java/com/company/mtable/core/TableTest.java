@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by jxwr on 2019/6/21.
  */
-public class MTableTest {
+public class TableTest {
     private Schema schema;
 
     private static Schema newSchema() {
@@ -43,7 +43,7 @@ public class MTableTest {
 
     @Test
     public void getput() throws Exception {
-        MTable mtable = new MTable(schema);
+        Table mtable = new Table(schema);
         for (int j = 0; j < 2; j++) {
             for (int i = 1; i < 11; i++) {
                 Record record = Record.newRecord(schema);
@@ -87,8 +87,8 @@ public class MTableTest {
     public void scan() throws Exception {
     }
 
-    private MTable mkTableRealData() {
-        MTable table = new MTable(schema);
+    private Table mkTableRealData() {
+        Table table = new Table(schema);
 
         Record record;
 
@@ -140,7 +140,7 @@ public class MTableTest {
 
     @Test
     public void scanAggregateScannerByGroup() throws Exception {
-        MTable table = mkTableRealData();
+        Table table = mkTableRealData();
         table.printTable();
 
         Querier querier = table.newQuerier();
@@ -183,7 +183,7 @@ public class MTableTest {
 
     @Test
     public void scanAggregateScannerType0() throws Exception {
-        MTable table = mkTableRealData();
+        Table table = mkTableRealData();
         table.printTable();
 
         Querier querier = table.newQuerier();
@@ -210,7 +210,7 @@ public class MTableTest {
 
     @Test
     public void testFastPath() throws Exception {
-        MTable table = mkTableRealData();
+        Table table = mkTableRealData();
         table.printTable();
 
         Querier querier = table.newQuerier();
@@ -238,7 +238,7 @@ public class MTableTest {
                 "public Object call(Object t1, Object t2) throws Exception { return (Integer)t1 + (Integer)t2;}"
         );
 
-        MTable table = mkTableRealData();
+        Table table = mkTableRealData();
         table.printTable();
 
         Querier querier = table.newQuerier();
@@ -263,7 +263,7 @@ public class MTableTest {
 
     @Test
     public void testFuncRecordParam() throws Exception {
-        MTable table = mkTableRealData();
+        Table table = mkTableRealData();
         table.printTable();
 
         FunctionRegistry.register("get_id", UDFRecordId.class);
@@ -304,7 +304,7 @@ public class MTableTest {
                         "}\n"
         );
 
-        MTable table = mkTableRealData();
+        Table table = mkTableRealData();
         table.printTable();
 
         Querier querier = table.newQuerier();
@@ -331,7 +331,7 @@ public class MTableTest {
     public void testSchemaFromType() {
         Schema schema = Schema.fromClass("productInfo", ProductInfo.class);
 
-        MTable table = new MTable(schema);
+        Table table = new Table(schema);
 
         for (int i = 0; i < 10; i++) {
             ProductInfo info = new ProductInfo();
